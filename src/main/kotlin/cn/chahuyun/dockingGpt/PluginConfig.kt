@@ -10,8 +10,8 @@ import net.mamoe.yamlkt.Comment
 @ValueDescription("插件配置")
 object PluginConfig : AutoSavePluginConfig("config") {
 
-    @ValueDescription("使用的openAi配置项(HD,OFFICIAL,OTHER)")
-    val type : OpenAiConfig.SwitchType by value(OpenAiConfig.SwitchType.HD)
+    @ValueDescription("使用的openAi配置项(XCJ,OFFICIAL)")
+    val type : OpenAiConfig.SwitchType by value(OpenAiConfig.SwitchType.XCJ)
 
     @Comment("""
         默认的消息触发词,通过正则处理.

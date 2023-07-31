@@ -17,7 +17,8 @@ repositories {
 dependencies{
     //依赖
     compileOnly("net.mamoe.yamlkt:yamlkt:0.12.0")
-    compileOnly("cn.chahuyun:HuYanAuthorize:1.0.0")
+    compileOnly("cn.chahuyun:HuYanAuthorize:1.0.1")
+    compileOnly("xyz.cssxsh.mirai:mirai-hibernate-plugin:2.7.1")
 
     //hutool
     implementation("cn.hutool:hutool-core:5.8.20")

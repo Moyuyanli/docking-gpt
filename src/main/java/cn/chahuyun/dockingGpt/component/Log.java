@@ -16,8 +16,71 @@ public class Log {
 
 
     public static void info(String msg) {
-
+            LOGGER.info(msg);
     }
+
+    /**
+     * 支持 String format 的日志打印
+     *
+     * @param msg 消息
+     * @param params 参数
+     * @author Moyuyanli
+     * @date 2023/7/30 0:55
+     */
+    public static void info(String msg, Object... params) {
+        LOGGER.info(String.format(msg, params));
+    }
+
+
+    public static void warning(String msg) {
+        LOGGER.warning(msg);
+    }
+
+    /**
+     * 支持 String format 的日志打印
+     *
+     * @param msg 消息
+     * @param params 参数
+     * @author Moyuyanli
+     * @date 2023/7/30 0:55
+     */
+    public static void warning(String msg, Object... params) {
+        LOGGER.warning(String.format(msg, params));
+    }
+
+    public static void error(String msg) {
+        LOGGER.error(msg);
+    }
+
+    /**
+     * 支持 String format 的日志打印
+     *
+     * @param msg 消息
+     * @param params 参数
+     * @author Moyuyanli
+     * @date 2023/7/30 0:55
+     */
+    public static void error(String msg, Object... params) {
+        LOGGER.error(String.format(msg, params));
+    }
+
+    public static void debug(String msg) {
+        LOGGER.debug(msg);
+    }
+
+    /**
+     * 支持 String format 的日志打印
+     *
+     * @param msg 消息
+     * @param params 参数
+     * @author Moyuyanli
+     * @date 2023/7/30 0:55
+     */
+    public static void debug(String msg, Object... params) {
+        LOGGER.debug(String.format(msg, params));
+    }
+
+
 
 
 }
