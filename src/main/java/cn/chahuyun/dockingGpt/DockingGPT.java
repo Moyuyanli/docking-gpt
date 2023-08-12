@@ -2,11 +2,8 @@ package cn.chahuyun.dockingGpt;
 
 
 import cn.chahuyun.authorize.PermissionServer;
-import cn.chahuyun.authorize.utils.Log;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
-
-import java.net.Socket;
 
 /**
  * @author Moyuyanli

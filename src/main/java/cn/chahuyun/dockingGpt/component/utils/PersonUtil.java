@@ -2,8 +2,6 @@ package cn.chahuyun.dockingGpt.component.utils;
 
 import cn.chahuyun.authorize.utils.Log;
 import cn.chahuyun.dockingGpt.DockingGPT;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReflectUtil;
 
 /**
  * 获取人设

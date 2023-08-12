@@ -16,9 +16,12 @@ import net.mamoe.mirai.event.events.MessageEvent;
 public class AskQuestions {
 
 
+    /**
+     * 简单测试
+     * @param event 消息事件
+     */
     @MessageAuthorize(custom = MessageMatch.class, messageMatching = MessageMatchingEnum.CUSTOM)
     public void question(MessageEvent event) {
-
         event.getSubject().sendMessage("乌拉~");
     }
 

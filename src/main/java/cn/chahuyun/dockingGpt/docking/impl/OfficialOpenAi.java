@@ -1,7 +1,6 @@
 package cn.chahuyun.dockingGpt.docking.impl;
 
 import cn.chahuyun.dockingGpt.docking.AbstractRequest;
-import cn.chahuyun.dockingGpt.docking.OpenAiRequest;
 import cn.chahuyun.dockingGpt.entity.MessageInfo;
 import cn.chahuyun.dockingGpt.entity.ProxyInfo;
 

@@ -2,9 +2,6 @@ package cn.chahuyun.dockingGpt.entity;
 
 import lombok.Data;
 import net.mamoe.mirai.message.data.MessageSource;
-import xyz.cssxsh.mirai.hibernate.MiraiHibernateRecorder;
-
-import java.io.Serializable;
 
 /**
  * 消息信息

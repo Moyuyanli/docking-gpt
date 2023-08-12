@@ -1,6 +1,5 @@
 package cn.chahuyun.dockingGpt.docking;
 
-import cn.chahuyun.authorize.utils.HibernateUtil;
 import cn.chahuyun.dockingGpt.entity.MessageInfo;
 
 /**
