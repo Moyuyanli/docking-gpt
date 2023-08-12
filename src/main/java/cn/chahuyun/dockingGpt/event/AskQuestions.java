@@ -18,6 +18,7 @@ public class AskQuestions {
 
     @MessageAuthorize(custom = MessageMatch.class, messageMatching = MessageMatchingEnum.CUSTOM)
     public void question(MessageEvent event) {
+
         event.getSubject().sendMessage("乌拉~");
     }
 

@@ -1,12 +1,14 @@
 package cn.chahuyun.dockingGpt
 
 import kotlinx.serialization.Serializable
+import lombok.Data
 import net.mamoe.mirai.console.data.AutoSavePluginConfig
 import net.mamoe.mirai.console.data.ValueDescription
 import net.mamoe.mirai.console.data.value
 import net.mamoe.yamlkt.Comment
 
 
+@Data
 @ValueDescription("插件配置")
 object PluginConfig : AutoSavePluginConfig("config") {
 

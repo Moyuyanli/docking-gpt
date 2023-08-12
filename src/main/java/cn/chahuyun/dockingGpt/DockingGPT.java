@@ -12,7 +12,16 @@ import java.net.Socket;
  * @author Moyuyanli
  */
 public final class DockingGPT extends JavaPlugin {
+
+    /**
+     * 插件唯一实例
+     */
     public static final DockingGPT INSTANCE = new DockingGPT();
+
+    /**
+     * 插件配置
+     */
+    public static PluginConfig pluginConfig;
 
 
     private DockingGPT() {
@@ -31,11 +40,13 @@ public final class DockingGPT extends JavaPlugin {
         reloadPluginConfig(OpenAiConfig.INSTANCE);
         reloadPluginConfig(PluginConfig.INSTANCE);
 
+        pluginConfig = PluginConfig.INSTANCE;
+
 
 
         PermissionServer instance = PermissionServer.getInstance();
         instance.addPermission("chat", "chatGPT聊天权限");
-        instance.init(INSTANCE,"cn.chahuyun.dockingGpt.event");
+        instance.init(INSTANCE, "cn.chahuyun.dockingGpt.event");
         getLogger().info("Docking-GPT Start-up success!");
     }
 }
