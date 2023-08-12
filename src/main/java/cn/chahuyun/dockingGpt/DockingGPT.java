@@ -2,11 +2,15 @@ package cn.chahuyun.dockingGpt;
 
 
 import cn.chahuyun.authorize.PermissionServer;
+import cn.chahuyun.authorize.utils.Log;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 
 import java.net.Socket;
 
+/**
+ * @author Moyuyanli
+ */
 public final class DockingGPT extends JavaPlugin {
     public static final DockingGPT INSTANCE = new DockingGPT();
 
@@ -26,6 +30,7 @@ public final class DockingGPT extends JavaPlugin {
 
         reloadPluginConfig(OpenAiConfig.INSTANCE);
         reloadPluginConfig(PluginConfig.INSTANCE);
+
 
 
         PermissionServer instance = PermissionServer.getInstance();

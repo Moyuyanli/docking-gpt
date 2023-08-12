@@ -10,14 +10,15 @@ group = "cn.chahuyun"
 version = "0.1.0"
 
 repositories {
-    mavenCentral()
-    maven("https://maven.aliyun.com/repository/public")
+    maven("https://repo1.maven.org/maven2")
+//    maven("https://maven.aliyun.com/repository/public")
+//    mavenCentral()
 }
 
 dependencies{
     //依赖
     compileOnly("net.mamoe.yamlkt:yamlkt:0.12.0")
-    compileOnly("cn.chahuyun:HuYanAuthorize:1.0.1")
+    compileOnly("cn.chahuyun:HuYanAuthorize:1.0.4")
     compileOnly("xyz.cssxsh.mirai:mirai-hibernate-plugin:2.7.1")
 
     //hutool

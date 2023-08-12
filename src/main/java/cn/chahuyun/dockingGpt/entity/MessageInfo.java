@@ -30,12 +30,4 @@ public class MessageInfo {
     private long formId;
 
 
-
-
-    public static void main(String[] args) {
-
-        MessageSource()
-        MiraiHibernateRecorder.INSTANCE.get()
-    }
-
 }
