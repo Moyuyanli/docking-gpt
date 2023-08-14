@@ -60,7 +60,7 @@ public class RequestFactory {
      * @author Moyuyanli
      * @date 2023/8/12 22:42
      */
-    private void init() {
+    public void init() {
         pluginConfig = DockingGPT.pluginConfig;
         openAiConfig = OpenAiConfig.INSTANCE.getOpenAiConfig();
 
@@ -83,7 +83,8 @@ public class RequestFactory {
                 }
 
                 String person = PersonUtil.getPerson(aiConfig.getAiSystemConfig());
-                openAiRequest = new XCJOpenAi(aiConfig.getOpenAiKey(), person,aiConfig.getOpenAiModel(),proxyInfo);
+                openAiRequest = new XCJOpenAi(aiConfig.getOpenAiKey(), person,aiConfig.getTemperature(),aiConfig.getOpenAiModel(),proxyInfo);
+                break;
             case OFFICIAL:
             default:
                 Log.error("openAi类型错误！");

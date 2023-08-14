@@ -18,13 +18,11 @@ repositories {
 dependencies{
     //依赖
     compileOnly("net.mamoe.yamlkt:yamlkt:0.12.0")
-    compileOnly("cn.chahuyun:HuYanAuthorize:1.0.4")
+    compileOnly("cn.chahuyun:HuYanAuthorize:1.0.6")
     compileOnly("xyz.cssxsh.mirai:mirai-hibernate-plugin:2.7.1")
 
     //hutool
-    implementation("cn.hutool:hutool-core:5.8.20")
-    implementation("cn.hutool:hutool-http:5.8.20")
-    implementation("cn.hutool:hutool-db:5.8.20")
+    implementation("cn.hutool:hutool-all:5.8.20")
 
     //lombok
     implementation("org.projectlombok:lombok:1.18.26")

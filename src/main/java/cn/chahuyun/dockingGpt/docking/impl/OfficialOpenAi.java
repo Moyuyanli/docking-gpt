@@ -13,8 +13,8 @@ import cn.chahuyun.dockingGpt.entity.ProxyInfo;
 public class OfficialOpenAi extends AbstractRequest  {
 
 
-    public OfficialOpenAi(String aiKey, String setAi, String model, ProxyInfo proxyInfo) {
-        super(aiKey, setAi, model, proxyInfo);
+    public OfficialOpenAi(String aiKey, String setAi, double temperature, String model, ProxyInfo proxyInfo) {
+        super(aiKey, setAi, temperature, model, proxyInfo);
     }
 
     @Override

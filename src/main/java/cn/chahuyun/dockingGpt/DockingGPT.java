@@ -2,6 +2,8 @@ package cn.chahuyun.dockingGpt;
 
 
 import cn.chahuyun.authorize.PermissionServer;
+import cn.chahuyun.authorize.utils.Log;
+import cn.chahuyun.dockingGpt.component.utils.PersonUtil;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 
@@ -38,9 +40,8 @@ public final class DockingGPT extends JavaPlugin {
         reloadPluginConfig(PluginConfig.INSTANCE);
 
         pluginConfig = PluginConfig.INSTANCE;
-
-
-
+        PersonUtil.init();
+        Log.init(INSTANCE);
         PermissionServer instance = PermissionServer.getInstance();
         instance.addPermission("chat", "chatGPT聊天权限");
         instance.init(INSTANCE, "cn.chahuyun.dockingGpt.event");

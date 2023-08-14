@@ -50,7 +50,7 @@ object OpenAiConfig : AutoSavePluginConfig("openAiConfig"){
                 openAiKey = "你的openAI秘钥",
                 openAiModel = "gpt-3.5-turbo-16k-0613",
                 temperature = 0.0,
-                aiSystemConfig = "SystemConfig",
+                aiSystemConfig = "person.txt",
                 proxy = mapOf(
                     OpenAiConfig.ProxyKey.Type to "HTTP",
                     OpenAiConfig.ProxyKey.URL to "127.0.0.1",

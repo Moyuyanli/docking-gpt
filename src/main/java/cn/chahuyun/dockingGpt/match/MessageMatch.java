@@ -25,10 +25,10 @@ public class MessageMatch implements CustomPattern {
     @Override
     public boolean custom(Event event) {
         MessageEvent messageEvent = event instanceof MessageEvent ? ((MessageEvent) event) : null;
-        String pattern = "^" + PluginConfig.INSTANCE.getTrigger() + ".*";
         if (messageEvent == null) {
             return false;
         }
+        String pattern = "^" + PluginConfig.INSTANCE.getTrigger() + ".*";
         return Pattern.matches(pattern, messageEvent.getMessage().contentToString());
     }
 }
