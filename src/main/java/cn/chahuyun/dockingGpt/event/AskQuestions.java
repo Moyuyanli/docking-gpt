@@ -8,6 +8,10 @@ import cn.chahuyun.dockingGpt.docking.RequestFactory;
 import cn.chahuyun.dockingGpt.entity.MessageInfo;
 import cn.chahuyun.dockingGpt.match.MessageMatch;
 import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.MessageChainBuilder;
+import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.message.data.QuoteReply;
 
 /**
  * 提问入口
@@ -34,7 +38,9 @@ public class AskQuestions {
         requestFactory.init();
         AbstractRequest openAiRequest = requestFactory.getOpenAiRequest();
         String result = openAiRequest.msgRequest(messageInfo);
-        event.getSubject().sendMessage(result);
+        MessageChainBuilder builder = new MessageChainBuilder();
+        builder.append(new QuoteReply(event.getMessage())).append(new PlainText(result));
+        event.getSubject().sendMessage(builder.build());
     }
 
 }

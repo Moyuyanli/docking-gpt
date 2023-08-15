@@ -24,7 +24,7 @@ public final class DockingGPT extends JavaPlugin {
 
 
     private DockingGPT() {
-        super(new JvmPluginDescriptionBuilder("cn.chahuyun.docking-gpt", "0.1.0")
+        super(new JvmPluginDescriptionBuilder("cn.chahuyun.docking-gpt", "1.0.0")
                 .name("Docking-GPT")
                 .info("用于对接openAI的Mira插件")
                 .dependsOn("cn.chahuyun.HuYanAuthorize",false)
@@ -35,12 +35,16 @@ public final class DockingGPT extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
+        /*
+        加载配置
+         */
         reloadPluginConfig(OpenAiConfig.INSTANCE);
         reloadPluginConfig(PluginConfig.INSTANCE);
-
         pluginConfig = PluginConfig.INSTANCE;
+
+        //加载ai人设文件
         PersonUtil.init();
+        //
         Log.init(INSTANCE);
         PermissionServer instance = PermissionServer.getInstance();
         instance.addPermission("chat", "chatGPT聊天权限");

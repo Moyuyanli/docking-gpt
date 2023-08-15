@@ -78,7 +78,7 @@ public class RequestFactory {
                 String string = proxy.get(OpenAiConfig.OpenAiConfig.ProxyKey.Type).toString();
                 if (string.equals(Constant.HTTP)) {
                     String url = proxy.get(OpenAiConfig.OpenAiConfig.ProxyKey.URL).toString();
-                    String port = proxy.get(OpenAiConfig.OpenAiConfig.ProxyKey.Port).toString();
+                    int port = (int) proxy.get(OpenAiConfig.OpenAiConfig.ProxyKey.Port);
                     proxyInfo = new ProxyInfo(Constant.HTTP, url, port);
                 }
 

@@ -8,8 +8,6 @@ package cn.chahuyun.dockingGpt.entity;
  */
 public class ProxyInfo {
 
-
-
     /**
      * 代理类型
      */
@@ -21,9 +19,9 @@ public class ProxyInfo {
     /**
      * 代理端口
      */
-    private String port;
+    private int port;
 
-    public ProxyInfo(String proxyType, String url, String port) {
+    public ProxyInfo(String proxyType, String url, int port) {
         this.proxyType = proxyType;
         this.url = url;
         this.port = port;
@@ -45,11 +43,11 @@ public class ProxyInfo {
         this.url = url;
     }
 
-    public String getPort() {
+    public int getPort() {
         return port;
     }
 
-    public void setPort(String port) {
+    public void setPort(int port) {
         this.port = port;
     }
 }

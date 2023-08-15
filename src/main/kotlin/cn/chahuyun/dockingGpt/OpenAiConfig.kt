@@ -24,12 +24,12 @@ object OpenAiConfig : AutoSavePluginConfig("openAiConfig"){
             代理设置：可用配置(区分大小写)
             Type : "NONE" / "HTTP"
             URL : "127.0.0.1"
-            Port : "7890"
+            Port : 7890
             """)
         val proxy : Map<ProxyKey,@Serializable(with = YamlDynamicSerializer::class) Any> = mapOf(
             ProxyKey.Type to "NONE",
             ProxyKey.URL to "127.0.0.1",
-            ProxyKey.Port to "7890"
+            ProxyKey.Port to 7890
         )
     ){
         @Serializable
@@ -54,7 +54,7 @@ object OpenAiConfig : AutoSavePluginConfig("openAiConfig"){
                 proxy = mapOf(
                     OpenAiConfig.ProxyKey.Type to "HTTP",
                     OpenAiConfig.ProxyKey.URL to "127.0.0.1",
-                    OpenAiConfig.ProxyKey.Port to "7890"
+                    OpenAiConfig.ProxyKey.Port to 7890
                 )
             ))
         )

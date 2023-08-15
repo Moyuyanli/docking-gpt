@@ -7,12 +7,12 @@ plugins {
 }
 
 group = "cn.chahuyun"
-version = "0.1.0"
+version = "1.0.0"
 
 repositories {
     maven("https://repo1.maven.org/maven2")
-//    maven("https://maven.aliyun.com/repository/public")
-//    mavenCentral()
+    maven("https://maven.aliyun.com/repository/public")
+    mavenCentral()
 }
 
 dependencies{

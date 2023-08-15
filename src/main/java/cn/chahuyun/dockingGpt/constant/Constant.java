@@ -44,6 +44,10 @@ public class Constant {
      * http请求-参数类型
      */
     public static final String REQUEST_HEAD_TYPE = "application/json";
+    /**
+     * http请求-结果-成功
+     */
+    public static final int REQUEST_RESULT_STATUS_SUCCESS = 200;
 
 
 }
