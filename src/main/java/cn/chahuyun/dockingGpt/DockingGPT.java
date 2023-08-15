@@ -2,7 +2,7 @@ package cn.chahuyun.dockingGpt;
 
 
 import cn.chahuyun.authorize.PermissionServer;
-import cn.chahuyun.authorize.utils.Log;
+import cn.chahuyun.dockingGpt.component.utils.Log;
 import cn.chahuyun.dockingGpt.component.utils.PersonUtil;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
@@ -22,12 +22,13 @@ public final class DockingGPT extends JavaPlugin {
      */
     public static PluginConfig pluginConfig;
 
+    public static final String VERSION = "1.0.1";
 
     private DockingGPT() {
-        super(new JvmPluginDescriptionBuilder("cn.chahuyun.docking-gpt", "1.0.0")
+        super(new JvmPluginDescriptionBuilder("cn.chahuyun.docking-gpt", VERSION)
                 .name("Docking-GPT")
                 .info("用于对接openAI的Mira插件")
-                .dependsOn("cn.chahuyun.HuYanAuthorize",false)
+                .dependsOn("cn.chahuyun.HuYanAuthorize", false)
                 .dependsOn("xyz.cssxsh.mirai.plugin.mirai-hibernate-plugin", false)
                 .author("Moyuyanli")
                 .build());
