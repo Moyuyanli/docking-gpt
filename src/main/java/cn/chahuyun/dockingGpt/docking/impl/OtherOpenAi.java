@@ -1,7 +1,7 @@
 package cn.chahuyun.dockingGpt.docking.impl;
 
 import cn.chahuyun.dockingGpt.docking.AbstractRequest;
-import cn.chahuyun.dockingGpt.entity.MessageInfo;
+import cn.chahuyun.dockingGpt.entity.RecordMessageInfo;
 import cn.chahuyun.dockingGpt.entity.ProxyInfo;
 
 /**
@@ -18,7 +18,7 @@ public class OtherOpenAi  extends AbstractRequest {
     }
 
     @Override
-    public String msgRequest(MessageInfo info) {
+    public String msgRequest(RecordMessageInfo info) {
         return null;
     }
 }

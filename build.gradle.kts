@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "cn.chahuyun"
-version = "1.0.1"
+version = "1.0.2"
 
 repositories {
     maven("https://repo1.maven.org/maven2")
@@ -15,7 +15,7 @@ repositories {
     mavenCentral()
 }
 
-dependencies{
+dependencies {
     //依赖
     compileOnly("net.mamoe.yamlkt:yamlkt:0.12.0")
     compileOnly("cn.chahuyun:HuYanAuthorize:1.0.7")
@@ -23,6 +23,10 @@ dependencies{
 
     //hutool
     implementation("cn.hutool:hutool-all:5.8.20")
+
+    //retrofit2
+    implementation ("com.squareup.retrofit2:retrofit:2.7.2")
+    implementation ("com.squareup.retrofit2:converter-gson:2.7.2")
 
     //lombok
     implementation("org.projectlombok:lombok:1.18.26")

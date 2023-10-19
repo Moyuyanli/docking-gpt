@@ -5,10 +5,9 @@ import cn.chahuyun.authorize.annotation.MessageAuthorize;
 import cn.chahuyun.authorize.enums.MessageMatchingEnum;
 import cn.chahuyun.dockingGpt.docking.AbstractRequest;
 import cn.chahuyun.dockingGpt.docking.RequestFactory;
-import cn.chahuyun.dockingGpt.entity.MessageInfo;
+import cn.chahuyun.dockingGpt.entity.RecordMessageInfo;
 import cn.chahuyun.dockingGpt.match.MessageMatch;
 import net.mamoe.mirai.event.events.MessageEvent;
-import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.QuoteReply;
@@ -33,11 +32,11 @@ public class AskQuestions {
             groupPermissions = "chat"
     )
     public void question(MessageEvent event) {
-        MessageInfo messageInfo = new MessageInfo(event);
+        RecordMessageInfo recordMessageInfo = new RecordMessageInfo(event);
         RequestFactory requestFactory = RequestFactory.create();
         requestFactory.init();
         AbstractRequest openAiRequest = requestFactory.getOpenAiRequest();
-        String result = openAiRequest.msgRequest(messageInfo);
+        String result = openAiRequest.msgRequest(recordMessageInfo);
         MessageChainBuilder builder = new MessageChainBuilder();
         builder.append(new QuoteReply(event.getMessage())).append(new PlainText(result));
         event.getSubject().sendMessage(builder.build());

@@ -2,7 +2,7 @@ package cn.chahuyun.dockingGpt.docking.impl;
 
 import cn.chahuyun.dockingGpt.constant.Constant;
 import cn.chahuyun.dockingGpt.docking.AbstractRequest;
-import cn.chahuyun.dockingGpt.entity.MessageInfo;
+import cn.chahuyun.dockingGpt.entity.RecordMessageInfo;
 import cn.chahuyun.dockingGpt.entity.ProxyInfo;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
@@ -28,8 +28,8 @@ public class OfficialOpenAi extends AbstractRequest {
      * @return
      */
     @Override
-    public String msgRequest(MessageInfo info) {
-        JSONObject entries = getParams(info.getMessage());
+    public String msgRequest(RecordMessageInfo info) {
+        JSONObject entries = getParams(info.getMessage()).toJson();
 
         HttpRequest post = HttpUtil.createPost(Constant.OFFICIAL_AI_URL);
         post.contentType(Constant.REQUEST_HEAD_TYPE);

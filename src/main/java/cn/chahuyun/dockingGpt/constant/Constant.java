@@ -34,11 +34,20 @@ public class Constant {
      * xcj-Ai地址
      */
     public static final String XCJ_AI_URL = "https://htgpt.646325.xyz/v1/chat/completions";
+    /**
+     * xcj-Ai地址前缀
+     */
+    public static final String XCJ_AI_URL_PREFIX = "https://htgpt.646325.xyz/";
 
     /**
      * 官方-AI地址
      */
     public static final String OFFICIAL_AI_URL = "https://api.openai.com/v1/chat/completions";
+
+    /**
+     * 提问请求后缀
+     */
+    public static final String REQUEST_URL_SUFFIX = "v1/chat/completions";
 
     /**
      * http请求-参数类型

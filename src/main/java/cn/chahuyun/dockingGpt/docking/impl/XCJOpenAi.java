@@ -2,11 +2,16 @@ package cn.chahuyun.dockingGpt.docking.impl;
 
 import cn.chahuyun.dockingGpt.constant.Constant;
 import cn.chahuyun.dockingGpt.docking.AbstractRequest;
-import cn.chahuyun.dockingGpt.entity.MessageInfo;
 import cn.chahuyun.dockingGpt.entity.ProxyInfo;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSONObject;
+import cn.chahuyun.dockingGpt.entity.RecordMessageInfo;
+import cn.chahuyun.dockingGpt.entity.ResponseInfo;
+import cn.chahuyun.dockingGpt.http.RetrofitApi;
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 使用小纯洁openAi地址
@@ -14,6 +19,7 @@ import cn.hutool.json.JSONObject;
  * @author Moyuyanli
  * @Date 2023/7/30 1:13
  */
+@SuppressWarnings("AlibabaClassNamingShouldBeCamel")
 public class XCJOpenAi extends AbstractRequest {
 
 
@@ -25,18 +31,26 @@ public class XCJOpenAi extends AbstractRequest {
      * 暂时的一个可以实现功能的实现方法
      *
      * @param info 消息信息
-     * @return
+     * @return 回答消息
      */
     @Override
-    public String msgRequest(MessageInfo info) {
-        JSONObject entries = getParams(info.getMessage());
+    public String msgRequest(RecordMessageInfo info) {
+        int timeout = 30;
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(timeout, TimeUnit.SECONDS)
+                .readTimeout(timeout, TimeUnit.SECONDS)
+                .writeTimeout(timeout, TimeUnit.SECONDS)
+                .build();
 
-        HttpRequest post = HttpUtil.createPost(Constant.XCJ_AI_URL);
-        post.contentType(Constant.REQUEST_HEAD_TYPE);
-        post.auth("Bearer " + getAiKey());
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constant.XCJ_AI_URL_PREFIX)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-        post.body(entries.toString());
+        RetrofitApi retrofitApi = retrofit.create(RetrofitApi.class);
+        Call<ResponseInfo> question = retrofitApi.question(getAuthorizeToken(), getParams(info.getMessage()));
 
-        return execute(post);
+        return execute(question);
     }
 }

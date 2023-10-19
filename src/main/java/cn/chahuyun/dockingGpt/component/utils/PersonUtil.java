@@ -39,16 +39,14 @@ public class PersonUtil {
      * @date 2023/8/12 22:51
      */
     public static String getPerson(String path) {
-        path = DATA_PATH +"\\"+ path;
-        String resource = FileUtil.readUtf8String(path);
-        if (resource == null || resource.isEmpty()) {
+        path = DATA_PATH + "\\" + path;
+        String resource = FileUtil.readUtf8String(path).replaceAll("\\n\\s+", "");
+        if (resource.isEmpty()) {
             Log.error("获取ai设定文件出错!");
             return null;
         }
         return resource;
     }
-
-
 
 
 }

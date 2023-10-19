@@ -1,6 +1,5 @@
 package cn.chahuyun.dockingGpt.entity;
 
-import cn.hutool.json.JSONUtil;
 import lombok.Data;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.*;
@@ -15,9 +14,7 @@ import java.io.Serializable;
  */
 
 @Data
-public class MessageInfo implements Serializable {
-
-
+public class RecordMessageInfo implements Serializable {
     /**
      * 消息源
      */
@@ -67,7 +64,7 @@ public class MessageInfo implements Serializable {
      *
      * @param event 消息事件
      */
-    public MessageInfo(MessageEvent event) {
+    public RecordMessageInfo(MessageEvent event) {
         this.messageSource = event.getSource();
         this.formId = messageSource.getFromId();
         this.sendId = messageSource.getTargetId();
