@@ -28,7 +28,6 @@ public class MessageMatch implements CustomPattern {
         if (messageEvent == null) {
             return false;
         }
-        System.out.println(PluginConfig.INSTANCE.getTrigger());
         String pattern = "^" + PluginConfig.INSTANCE.getTrigger() + ".*";
         return Pattern.matches(pattern, messageEvent.getMessage().contentToString());
     }

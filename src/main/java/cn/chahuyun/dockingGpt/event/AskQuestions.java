@@ -32,9 +32,11 @@ public class AskQuestions {
             groupPermissions = "chat"
     )
     public void question(MessageEvent event) {
+
         RecordMessageInfo recordMessageInfo = new RecordMessageInfo(event);
+
         RequestFactory requestFactory = RequestFactory.create();
-        requestFactory.init();
+
         AbstractRequest openAiRequest = requestFactory.getOpenAiRequest();
         String result = openAiRequest.msgRequest(recordMessageInfo);
         MessageChainBuilder builder = new MessageChainBuilder();

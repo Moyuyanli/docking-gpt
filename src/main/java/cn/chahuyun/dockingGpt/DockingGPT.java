@@ -23,7 +23,7 @@ public final class DockingGPT extends JavaPlugin {
      */
     public static PluginConfig pluginConfig;
 
-    public static final String VERSION = "1.0.2";
+    public static final String VERSION = "1.0.3";
 
     private DockingGPT() {
         super(new JvmPluginDescriptionBuilder("cn.chahuyun.docking-gpt", VERSION)
@@ -50,6 +50,7 @@ public final class DockingGPT extends JavaPlugin {
         Log.init(INSTANCE);
         PermissionServer instance = PermissionServer.getInstance();
         instance.addPermission("chat", "chatGPT聊天权限");
+        instance.addPermission("chat-admin", "chatGPT管理权限");
         instance.init(INSTANCE, "cn.chahuyun.dockingGpt.event");
         getLogger().info("Docking-GPT Start-up success!");
     }
