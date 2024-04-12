@@ -33,7 +33,7 @@ public class MessageMatch implements CustomPattern {
         String content = messageEvent.getMessage().contentToString();
         List<String> forbidden = ForbiddenWords.INSTANCE.getForbidden();
         for (String s : forbidden) {
-            if (Pattern.matches(s, content)) {
+            if (Pattern.compile(s).matcher(content).find()) {
                 return false;
             }
         }
