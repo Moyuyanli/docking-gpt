@@ -3,6 +3,7 @@ package cn.chahuyun.dockingGpt.event;
 import cn.chahuyun.authorize.annotation.EventComponent;
 import cn.chahuyun.authorize.annotation.MessageAuthorize;
 import cn.chahuyun.authorize.enums.MessageMatchingEnum;
+import cn.chahuyun.dockingGpt.ForbiddenWords;
 import cn.chahuyun.dockingGpt.docking.RequestFactory;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
@@ -73,6 +74,23 @@ public class Operation {
     public void listModel(GroupMessageEvent event) {
         Group subject = event.getSubject();
         subject.sendMessage("目前支持模型列表:\ngpt3.5\ngpt4.0\n通义千问\n文心一言");
+    }
+
+    /**
+     * 添加禁词
+     * @param event 事件
+     */
+    @MessageAuthorize(
+            userPermissions = "chat-admin",
+            text = "添加禁词 (\\S*?)",
+            messageMatching = MessageMatchingEnum.REGULAR,
+            groupPermissions = "chat"
+    )
+    public void addForbidden(GroupMessageEvent event) {
+        String content = event.getMessage().contentToString();
+        String string = content.split(" ")[1];
+        ForbiddenWords.INSTANCE.getForbidden().add(string);
+        event.getSubject().sendMessage("添加禁词 " + string + "成功");
     }
 
 }
