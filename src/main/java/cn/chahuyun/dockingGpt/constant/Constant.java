@@ -58,7 +58,7 @@ public class Constant {
     /**
      * xcj-Ai国内地址前缀
      */
-    public static final String XCJ_AI_URL_CN_PREFIX = "https://htgpt.646325.xyz/";
+    public static final String XCJ_AI_URL_CN_PREFIX = "https://htgpt.fdps.top/";
 
     /**
      * 官方-AI地址
