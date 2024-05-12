@@ -34,7 +34,7 @@ public class Operation {
     public void switchModel(GroupMessageEvent event) {
         String content = event.getMessage().contentToString();
         String[] split = content.split(" ");
-        RequestFactory.create().setModel(split[1]);
+        RequestFactory.getInstance().setModel(split[1]);
         event.getSubject().sendMessage("已将模型修改为:" + split[1]);
     }
 
@@ -51,7 +51,7 @@ public class Operation {
             messageMatching = MessageMatchingEnum.TEXT,
             groupPermissions = "chat")
     public void viewModel(GroupMessageEvent event) {
-        String model = RequestFactory.create().getModel();
+        String model = RequestFactory.getInstance().getModel();
         event.getSubject().sendMessage("当前ai模型为:" + model);
     }
 
@@ -91,6 +91,19 @@ public class Operation {
         String string = content.split(" ")[1];
         ForbiddenWords.INSTANCE.getForbidden().add(string);
         event.getSubject().sendMessage("添加禁词 " + string + "成功");
+    }
+
+
+    @MessageAuthorize(
+            userPermissions = "chat-admin",
+            text = "切换渠道 (国内|国外)",
+            messageMatching = MessageMatchingEnum.REGULAR,
+            groupPermissions = "chat")
+    public void switchChannel(GroupMessageEvent event) {
+        String content = event.getMessage().contentToString();
+        String[] split = content.split(" ");
+        RequestFactory.getInstance().setChannel(split[1]);
+        event.getSubject().sendMessage("已将渠道修改为:" + split[1]);
     }
 
 }

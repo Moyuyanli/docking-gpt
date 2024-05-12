@@ -35,7 +35,7 @@ public class AskQuestions {
 
         RecordMessageInfo recordMessageInfo = new RecordMessageInfo(event);
 
-        RequestFactory requestFactory = RequestFactory.create();
+        RequestFactory requestFactory = RequestFactory.getInstance();
 
         AbstractRequest openAiRequest = requestFactory.getOpenAiRequest();
         String result = openAiRequest.msgRequest(recordMessageInfo);
