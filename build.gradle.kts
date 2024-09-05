@@ -3,11 +3,12 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
-    id("net.mamoe.mirai-console") version "2.15.0"
+    id("net.mamoe.mirai-console") version "2.16.0"
+    id("com.github.gmazzo.buildconfig") version "3.1.0"
 }
 
 group = "cn.chahuyun"
-version = "1.0.4"
+version = "1.1.0"
 
 repositories {
     maven("https://repo1.maven.org/maven2")
@@ -18,7 +19,7 @@ repositories {
 dependencies {
     //依赖
     compileOnly("net.mamoe.yamlkt:yamlkt:0.12.0")
-    compileOnly("cn.chahuyun:HuYanAuthorize:1.0.7")
+    compileOnly("cn.chahuyun:HuYanAuthorize:1.1.5")
     compileOnly("xyz.cssxsh.mirai:mirai-hibernate-plugin:2.7.1")
 
     //hutool
@@ -39,4 +40,16 @@ tasks.withType<JavaCompile> {
 
 mirai {
     jvmTarget = JavaVersion.VERSION_11
+}
+
+buildConfig {
+    className("BuildConstants")
+    packageName("cn.chahuyun.dockingGpt")
+    useKotlinOutput()
+    buildConfigField("String", "VERSION", "\"${project.version}\"")
+    buildConfigField(
+        "java.time.Instant",
+        "BUILD_TIME",
+        "java.time.Instant.ofEpochSecond(${System.currentTimeMillis() / 1000L}L)"
+    )
 }
