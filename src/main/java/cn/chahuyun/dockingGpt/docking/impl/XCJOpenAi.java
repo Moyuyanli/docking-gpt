@@ -6,6 +6,9 @@ import cn.chahuyun.dockingGpt.entity.ProxyInfo;
 import cn.chahuyun.dockingGpt.entity.RecordMessageInfo;
 import cn.chahuyun.dockingGpt.entity.ResponseInfo;
 import cn.chahuyun.dockingGpt.http.RetrofitApi;
+import lombok.Generated;
+import lombok.Getter;
+import lombok.Setter;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -19,9 +22,12 @@ import java.util.concurrent.TimeUnit;
  * @author Moyuyanli
  * @Date 2023/7/30 1:13
  */
+@Setter
+@Getter
 @SuppressWarnings("AlibabaClassNamingShouldBeCamel")
 public class XCJOpenAi extends AbstractRequest {
 
+    private String url = Constant.XCJ_AI_URL_PREFIX;
 
     public XCJOpenAi(String aiKey, String setAi, double temperature, String model, ProxyInfo proxyInfo) {
         super(aiKey, setAi, temperature, model, proxyInfo);
@@ -43,7 +49,7 @@ public class XCJOpenAi extends AbstractRequest {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.XCJ_AI_URL_PREFIX)
+                .baseUrl(url)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

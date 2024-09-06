@@ -50,7 +50,7 @@ public class RequestFactory {
      * @author Moyuyanli
      * @date 2023/8/12 22:42
      */
-    public static RequestFactory create() {
+    public static RequestFactory getInstance() {
         if (instance == null) {
             RequestFactory requestFactory = new RequestFactory();
             requestFactory.init();
@@ -97,7 +97,6 @@ public class RequestFactory {
     public String getModel() {
         AbstractRequest request = (AbstractRequest) openAiRequest;
         switch (request.getModel()) {
-
             case Constant.OPENAI_MODEL_GPT_4:
                 return "gpt4.0";
             case Constant.OPENAI_MODEL_TONG_YI_QIAN_WEN:
@@ -109,6 +108,28 @@ public class RequestFactory {
                 return "gpt3.5";
         }
     }
+
+    /**
+     * 切换xcj的请求渠道
+     * @param channelKey 渠道
+     */
+    public void setChannel(String channelKey) {
+        if (!(openAiRequest instanceof XCJOpenAi)) {
+            throw new RuntimeException("错误的操作");
+        }
+        XCJOpenAi xcjOpenAi = (XCJOpenAi) openAiRequest;
+        String url;
+        switch (channelKey) {
+            case "国外":
+                url = Constant.XCJ_AI_URL_PREFIX;
+                break;
+            case "国内":
+            default:
+                url = Constant.XCJ_AI_URL_CN_PREFIX;
+        }
+        xcjOpenAi.setUrl(url);
+    }
+
 
     /**
      * 根据配置获取gpt请求工具
