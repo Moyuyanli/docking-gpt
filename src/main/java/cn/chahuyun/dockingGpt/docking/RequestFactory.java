@@ -2,8 +2,8 @@ package cn.chahuyun.dockingGpt.docking;
 
 import cn.chahuyun.authorize.utils.Log;
 import cn.chahuyun.dockingGpt.DockingGPT;
-import cn.chahuyun.dockingGpt.OpenAiConfig;
-import cn.chahuyun.dockingGpt.PluginConfig;
+import cn.chahuyun.dockingGpt.config.OpenAiConfig;
+import cn.chahuyun.dockingGpt.config.PluginConfig;
 import cn.chahuyun.dockingGpt.component.utils.PersonUtil;
 import cn.chahuyun.dockingGpt.constant.Constant;
 import cn.chahuyun.dockingGpt.docking.impl.XCJOpenAi;

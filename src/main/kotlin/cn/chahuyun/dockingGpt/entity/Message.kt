@@ -1,9 +1,7 @@
 package cn.chahuyun.dockingGpt.entity
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
-import java.util.*
+import jakarta.persistence.*
+import java.time.LocalDateTime
 
 /**
  *  请求message
@@ -15,11 +13,42 @@ import java.util.*
 @Table(name = "question_message")
 data class QuestionMessage(
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int? = null,
+    /**
+     * 群
+     */
     var group: Long? = null,
+    /**
+     * 发送人
+     */
     var sender: Long? = null,
+    /**
+     * 引用回复id
+     */
+    var quoteId: Long? = null,
+    /**
+     * 提问消息id
+     */
+    var questionId:Long? = null,
+    /**
+     * 提问
+     */
     var question: String? = null,
-    var timer: Date? = null,
+    /**
+     * 提问时间
+     */
+    var timer: LocalDateTime? = null,
+    /**
+     * 回复消息id
+     */
+    var replyId:Long? = null,
+    /**
+     * 回答
+     */
     var reply: String? = null,
-    var replyTime: Date? = null,
+    /**
+     * 回答时间
+     */
+    var replyTime: LocalDateTime? = null,
 )

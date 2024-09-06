@@ -1,8 +1,8 @@
 package cn.chahuyun.dockingGpt.match;
 
 import cn.chahuyun.authorize.Interface.CustomPattern;
-import cn.chahuyun.dockingGpt.ForbiddenWords;
-import cn.chahuyun.dockingGpt.PluginConfig;
+import cn.chahuyun.dockingGpt.config.ForbiddenWords;
+import cn.chahuyun.dockingGpt.config.PluginConfig;
 import net.mamoe.mirai.event.Event;
 import net.mamoe.mirai.event.events.MessageEvent;
 

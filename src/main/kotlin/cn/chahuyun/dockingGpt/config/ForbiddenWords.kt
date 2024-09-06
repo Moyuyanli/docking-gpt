@@ -1,4 +1,4 @@
-package cn.chahuyun.dockingGpt
+package cn.chahuyun.dockingGpt.config
 
 import net.mamoe.mirai.console.data.AutoSavePluginConfig
 import net.mamoe.mirai.console.data.ValueDescription
@@ -12,10 +12,8 @@ import net.mamoe.mirai.console.data.value
  */
 object ForbiddenWords : AutoSavePluginConfig("forbidden") {
 
-    @ValueDescription("openAi配置项 XCJ / OFFICIAL")
-    var forbidden: List<String> by value(arrayListOf<String>().apply {
-        add("不[能要行]")
-    })
+    @ValueDescription("过滤词")
+    var forbidden: MutableList<String> by value(mutableListOf("不[能要行]"))
 
 
 }

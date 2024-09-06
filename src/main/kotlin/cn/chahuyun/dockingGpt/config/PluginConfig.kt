@@ -1,4 +1,4 @@
-package cn.chahuyun.dockingGpt
+package cn.chahuyun.dockingGpt.config
 
 import kotlinx.serialization.Serializable
 import lombok.Data

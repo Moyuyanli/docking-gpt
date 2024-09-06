@@ -4,7 +4,9 @@ package cn.chahuyun.dockingGpt;
 import cn.chahuyun.authorize.PermissionServer;
 import cn.chahuyun.dockingGpt.component.utils.Log;
 import cn.chahuyun.dockingGpt.component.utils.PersonUtil;
-import cn.hutool.core.util.RandomUtil;
+import cn.chahuyun.dockingGpt.config.ForbiddenWords;
+import cn.chahuyun.dockingGpt.config.OpenAiConfig;
+import cn.chahuyun.dockingGpt.config.PluginConfig;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 

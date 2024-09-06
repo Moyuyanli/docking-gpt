@@ -3,7 +3,7 @@ package cn.chahuyun.dockingGpt.event;
 import cn.chahuyun.authorize.annotation.EventComponent;
 import cn.chahuyun.authorize.annotation.MessageAuthorize;
 import cn.chahuyun.authorize.enums.MessageMatchingEnum;
-import cn.chahuyun.dockingGpt.ForbiddenWords;
+import cn.chahuyun.dockingGpt.config.ForbiddenWords;
 import cn.chahuyun.dockingGpt.docking.RequestFactory;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
