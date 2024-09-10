@@ -60,5 +60,5 @@ enum class RoleEnum(
     /**
      * 角色-ai
      */
-    ROLE("role")
+    ROLE("assistant")
 }
