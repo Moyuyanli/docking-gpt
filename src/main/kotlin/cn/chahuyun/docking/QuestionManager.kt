@@ -212,7 +212,17 @@ object ChatFactory {
         return result
     }
 
-
+    /**
+     * 添加模型
+     */
+    fun addModel(name: String, model: String): String {
+        return config.openAiModel[name]?.let {
+            "模型 $name 已经存在!"
+        } ?: let {
+            config.openAiModel.put(name, model)
+            "模型 $name 添加成功！"
+        }
+    }
 
 
 }

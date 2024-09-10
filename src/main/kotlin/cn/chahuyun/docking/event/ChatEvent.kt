@@ -81,4 +81,16 @@ class ChatEvent {
         event.sendMessageQuery(ChatFactory.listModel())
     }
 
+
+    @MessageAuthorize(
+        ["添加模型 \\S+ \\S+"],
+        messageMatching = MessageMatchingEnum.REGULAR,
+        userPermissions = [PermConstant.OWNER, PermConstant.ADMIN],
+        groupPermissions = [PermCode.CHAT]
+    )
+    suspend fun addModel(event: GroupMessageEvent) {
+        val split = event.message.contentToString().split(" ")
+        event.sendMessageQuery(ChatFactory.addModel(split[1], split[2]))
+    }
+
 }
