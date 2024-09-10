@@ -13,7 +13,7 @@ object PersonManager {
         val dataPath = plugin.dataFolderPath
 
 
-        val personFile = dataPath.resolve("/person.txt").toFile()
+        val personFile = dataPath.resolve("person.txt").toFile()
 
         if (!personFile.exists()) {
             personFile.createNewFile()
