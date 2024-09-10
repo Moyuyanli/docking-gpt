@@ -20,10 +20,12 @@ dependencies {
     //依赖
     compileOnly("net.mamoe.yamlkt:yamlkt:0.12.0")
     compileOnly("cn.chahuyun:HuYanAuthorize:1.1.5")
-    compileOnly("xyz.cssxsh.mirai:mirai-hibernate-plugin:2.7.1")
+
 
     //hutool
     implementation("cn.hutool:hutool-all:5.8.20")
+
+    implementation("cn.chahuyun:hibernate-plus:1.0.16")
 
     //retrofit2
     implementation("com.squareup.retrofit2:retrofit:2.7.2")
@@ -44,7 +46,7 @@ mirai {
 
 buildConfig {
     className("BuildConstants")
-    packageName("cn.chahuyun.dockingGpt")
+    packageName("cn.chahuyun.docking")
     useKotlinOutput()
     buildConfigField("String", "VERSION", "\"${project.version}\"")
     buildConfigField(
