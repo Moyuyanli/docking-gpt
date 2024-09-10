@@ -207,9 +207,12 @@ object ChatFactory {
     fun listModel(): String {
         var result = "当前拥有模型列表:\n"
         config.openAiModel.forEach {
-            result += it.key
+            result += "${it.key}\n"
         }
         return result
     }
+
+
+
 
 }

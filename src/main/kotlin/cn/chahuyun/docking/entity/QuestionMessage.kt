@@ -47,6 +47,7 @@ data class QuestionMessage(
     /**
      * 回答
      */
+    @Column(columnDefinition = "TEXT")
     var reply: String? = null,
     /**
      * 回答时间
