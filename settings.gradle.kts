@@ -4,4 +4,4 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = "docking-gpt"
+rootProject.name = "docking-ai"
