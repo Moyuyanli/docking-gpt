@@ -3,11 +3,12 @@ package cn.chahuyun.docking.event
 import cn.chahuyun.authorize.EventComponent
 import cn.chahuyun.authorize.MessageAuthorize
 import cn.chahuyun.authorize.constant.MessageMatchingEnum
+import cn.chahuyun.authorize.constant.PermConstant
 import cn.chahuyun.authorize.utils.MessageUtil.sendMessageQuery
+import cn.chahuyun.docking.ChatFactory
 import cn.chahuyun.docking.CustomMatch
 import cn.chahuyun.docking.PermCode
 import cn.chahuyun.docking.entity.QuestionMessage
-import cn.chahuyun.docking.ChatFactory
 import cn.chahuyun.hibernateplus.HibernateFactory
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.source
@@ -49,6 +50,35 @@ class ChatEvent {
         question.replyTime = LocalDateTime.now()
 
         HibernateFactory.merge(question)
+    }
+
+    @MessageAuthorize(
+        ["切换模型 \\S+"],
+        messageMatching = MessageMatchingEnum.REGULAR,
+        userPermissions = [PermConstant.OWNER, PermConstant.ADMIN],
+        groupPermissions = [PermCode.CHAT]
+    )
+    suspend fun switchModel(event: GroupMessageEvent) {
+        val s = event.message.contentToString().split(" ")[1]
+        event.sendMessageQuery(ChatFactory.switchModel(s))
+    }
+
+    @MessageAuthorize(
+        ["当前模型"],
+        userPermissions = [PermConstant.OWNER, PermConstant.ADMIN],
+        groupPermissions = [PermCode.CHAT]
+    )
+    suspend fun viewModel(event: GroupMessageEvent) {
+        event.sendMessageQuery(ChatFactory.viewModel())
+    }
+
+    @MessageAuthorize(
+        ["模型列表", "拥有模型"],
+        userPermissions = [PermConstant.OWNER, PermConstant.ADMIN],
+        groupPermissions = [PermCode.CHAT]
+    )
+    suspend fun listModel(event: GroupMessageEvent) {
+        event.sendMessageQuery(ChatFactory.listModel())
     }
 
 }

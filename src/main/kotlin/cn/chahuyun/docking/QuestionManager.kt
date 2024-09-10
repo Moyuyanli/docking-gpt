@@ -175,4 +175,41 @@ object ChatFactory {
         return requestExamples.build(question)
     }
 
+
+    /**
+     * 切换模型
+     */
+    fun switchModel(model: String): String {
+        val s = config.openAiModel[model]
+        return s?.let {
+            requestExamples.model = it
+            "模型切换成功:$model"
+        } ?: "没有这个模型!"
+    }
+
+    /**
+     * 当前模型
+     */
+    fun viewModel(): String {
+        val model = requestExamples.model
+
+        config.openAiModel.forEach {
+            if (it.value == model) {
+                return "当前模型 ${it.key}"
+            }
+        }
+        return "当前模型为空!"
+    }
+
+    /**
+     * 查看模型列表
+     */
+    fun listModel(): String {
+        var result = "当前拥有模型列表:\n"
+        config.openAiModel.forEach {
+            result += it.key
+        }
+        return result
+    }
+
 }
