@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "cn.chahuyun"
-version = "1.1.0"
+version = "1.1.1"
 
 repositories {
     maven("https://repo1.maven.org/maven2")
