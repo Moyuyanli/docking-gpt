@@ -19,7 +19,7 @@ repositories {
 dependencies {
     //依赖
     compileOnly("net.mamoe.yamlkt:yamlkt:0.12.0")
-    compileOnly("cn.chahuyun:HuYanAuthorize:1.1.5")
+    compileOnly("cn.chahuyun:HuYanAuthorize:1.2.0")
 
 
     //hutool
