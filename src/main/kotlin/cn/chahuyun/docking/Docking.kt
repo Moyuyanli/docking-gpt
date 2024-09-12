@@ -15,7 +15,7 @@ object Docking : KotlinPlugin(
     ) {
         author("moyuyanli")
         info("用于对接AI的Mira插件")
-        dependsOn("cn.chahuyun.HuYanAuthorize", ">=1.1.5", false)
+        dependsOn("cn.chahuyun.HuYanAuthorize", ">=1.2.0", false)
     }
 ) {
     /**
@@ -38,7 +38,7 @@ object Docking : KotlinPlugin(
         //初始化聊天工厂
         ChatFactory.init()
 
-        PermissionServer.init(this, "cn.chahuyun.docking.event")
+        PermissionServer.registerMessageEvent(this, "cn.chahuyun.docking.event")
     }
 
     /**
