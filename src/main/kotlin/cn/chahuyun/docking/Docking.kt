@@ -34,9 +34,10 @@ object Docking : KotlinPlugin(
         PermManager.init(this)
         PluginManager.init(this)
         PersonManager.init(this)
+        MessageCache.init()
 
         //初始化聊天工厂
-        ChatFactory.init()
+        ClientFactory.init()
 
         PermissionServer.registerMessageEvent(this, "cn.chahuyun.docking.event")
     }

@@ -1,6 +1,6 @@
 package cn.chahuyun.docking.entity
 
-import cn.chahuyun.docking.RoleEnum
+import cn.chahuyun.docking.RoleType
 import lombok.Data
 
 @Data
@@ -20,12 +20,12 @@ class Record {
      */
     var content: String
 
-    constructor(role: RoleEnum, content: String) {
+    constructor(role: RoleType, content: String) {
         this.role = role.value
         this.content = content
     }
 
-    constructor(role: RoleEnum, name: String?, content: String) {
+    constructor(role: RoleType, name: String?, content: String) {
         this.role = role.value
         this.name = name
         this.content = content

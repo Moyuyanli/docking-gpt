@@ -7,14 +7,20 @@ import cn.chahuyun.docking.config.PluginConfig
 import cn.chahuyun.docking.entity.*
 import cn.chahuyun.docking.http.RetrofitApi
 import cn.chahuyun.hibernateplus.HibernateFactory
+import cn.hutool.core.date.DateUtil
 import cn.hutool.json.JSONObject
+import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.Member
+import net.mamoe.mirai.contact.MemberPermission.*
+import net.mamoe.mirai.contact.UserOrBot
+import net.mamoe.mirai.contact.nameCardOrNick
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class RequestImpl(
+class Client(
     /**
      * 连接秘钥
      */
@@ -39,7 +45,8 @@ class RequestImpl(
      * 代理
      */
     var proxyInfo: ProxyInfo,
-) {
+
+    ) {
 
     private fun getToken(): String {
         return "Bearer $apiKey"
@@ -48,18 +55,34 @@ class RequestImpl(
     /**
      * 构建消息
      */
-    fun build(question: QuestionMessage): String {
+    fun build(question: QuestionMessage, position: String): String {
+        val requestInfo = RequestInfo(
+            model,
+            temperature,
+            mutableListOf(
+                Record(RoleType.SYSTEM, aiMessageSet.replace("{职位}", position)),
+                Record(RoleType.SYSTEM, person)
+            )
+        )
+
+        val cached = MessageCache.getCachedMessages(group = question.group!!)
+
+        val records = cached.map { handleMemberMessage(it.first, it.second) }
+
+        records.forEach { requestInfo.addMessage(it) }
+
+        /*
+        //过去式关联消息
+
+        //, *spliceMessage.toTypedArray()
+
         var spliceMessage = spliceMessage(question)
         val size = spliceMessage.size
         if (size >= 10) {
             spliceMessage = spliceMessage.subList(size - 10, size)
         }
+         */
 
-        val requestInfo = RequestInfo(
-            model,
-            temperature,
-            mutableListOf(Record(RoleEnum.SYSTEM, person), *spliceMessage.toTypedArray())
-        )
 
         val response = question(getToken(), requestInfo)
         val execute = response.execute()
@@ -85,15 +108,15 @@ class RequestImpl(
             if (one?.quoteId != null) {
                 // 递归处理引用消息，并将其结果与当前消息的结果合并
                 return spliceMessage(one).apply {
-                    question.question?.let { add(Record(RoleEnum.USER, it)) }
-                    question.reply?.let { add(Record(RoleEnum.ROLE, it)) }
+                    question.question?.let { add(Record(RoleType.USER, it)) }
+                    question.reply?.let { add(Record(RoleType.ROLE, it)) }
                 }
             }
         }
         // 创建一个新的记录列表，并添加当前消息的信息
         val list = mutableListOf<Record>().apply {
-            question.question?.let { add(Record(RoleEnum.USER, it)) }
-            question.reply?.let { add(Record(RoleEnum.ROLE, it)) }
+            question.question?.let { add(Record(RoleType.USER, it)) }
+            question.reply?.let { add(Record(RoleType.ROLE, it)) }
         }
         return list
     }
@@ -124,11 +147,36 @@ class RequestImpl(
 
         return retrofit.create(RetrofitApi::class.java).question(token, requestInfo)
     }
+
+
+    private fun handleMemberMessage(member: UserOrBot, message: Triple<Int, Int, String>): Record {
+        val (msgId, timeInt, msg) = message
+
+        val time = DateUtil.format(DateUtil.date(timeInt / 1000L), "yyyy-MM-dd HH:mm:ss")
+        if (member is Member) {
+            val position = when (member.permission) {
+                MEMBER -> "member"
+                ADMINISTRATOR -> "admin"
+                OWNER -> "owner"
+            }
+
+            // 格式化时间为字符串
+
+            val prefix = "[id=${member.id},name=${member.nameCardOrNick},time=$time,msgId=$msgId,position=$position]\n"
+            return Record(RoleType.USER, prefix + msg)
+        }
+
+        if (member is Bot) {
+            val prefix = "[id=${member.id},name=${member.nameCardOrNick},time=$time,msgId=$msgId]\n"
+            return Record(RoleType.ROLE, prefix + msg)
+        }
+        return Record(RoleType.ROLE, "这是一条空消息，请忽略!")
+    }
 }
 
-object ChatFactory {
+object ClientFactory {
 
-    private lateinit var requestExamples: RequestImpl
+    private lateinit var requestClient: Client
 
     private lateinit var config: AiConfig
 
@@ -152,16 +200,16 @@ object ChatFactory {
             )
 
 
-            val impl = RequestImpl(
+            val client = Client(
                 config.openAiKey,
-                PersonManager.person,
+                PersonManager.person + "\n以下为群聊内容，请你补全并进行回复。",
                 config.temperature,
-                config.openAiModel.values.first(),
-                config.openAiBaseUrl.values.first(),
+                config.openAiModel[config.defaultModel]!!,
+                config.openAiBaseUrl[config.defaultBaseUrl]!!,
                 proxy
             )
 
-            requestExamples = impl
+            requestClient = client
 
         } else {
             TODO()
@@ -171,8 +219,8 @@ object ChatFactory {
     /**
      * 进行聊天
      */
-    fun chat(question: QuestionMessage): String {
-        return requestExamples.build(question)
+    fun chat(question: QuestionMessage, position: String): String {
+        return requestClient.build(question, position)
     }
 
 
@@ -182,7 +230,7 @@ object ChatFactory {
     fun switchModel(model: String): String {
         val s = config.openAiModel[model]
         return s?.let {
-            requestExamples.model = it
+            requestClient.model = it
             "模型切换成功:$model"
         } ?: "没有这个模型!"
     }
@@ -191,7 +239,7 @@ object ChatFactory {
      * 当前模型
      */
     fun viewModel(): String {
-        val model = requestExamples.model
+        val model = requestClient.model
 
         config.openAiModel.forEach {
             if (it.value == model) {
@@ -219,7 +267,7 @@ object ChatFactory {
         return config.openAiModel[name]?.let {
             "模型 $name 已经存在!"
         } ?: let {
-            config.openAiModel.put(name, model)
+            config.openAiModel[name] = model
             "模型 $name 添加成功！"
         }
     }

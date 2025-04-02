@@ -12,13 +12,15 @@ import net.mamoe.yamlkt.YamlDynamicSerializer
 @ValueDescription("openAi配置")
 object OpenAiConfig : AutoSavePluginConfig("openAiConfig") {
 
-    @ValueDescription("openAi配置项 XCJ / OFFICIAL")
+    @ValueDescription("openAi配置项 XCJ / CUSTOM / OFFICIAL")
     val openAiConfig: MutableMap<SwitchType, AiConfig> by value(
         mutableMapOf(
             Pair(
                 SwitchType.OFFICIAL, AiConfig(
+                    defaultBaseUrl= "默认",
                     openAiBaseUrl = mutableMapOf("默认" to "你的的baseUrl"),
                     openAiKey = "你的openAI秘钥",
+                    defaultModel = "默认",
                     openAiModel = mutableMapOf("gpt-3.5" to "gpt-3.5-turbo-16k-0613"),
                     temperature = 0.0,
                     proxy = mutableMapOf(
@@ -35,10 +37,14 @@ object OpenAiConfig : AutoSavePluginConfig("openAiConfig") {
 
 @Serializable
 data class AiConfig(
+    @Comment("默认渠道")
+    val defaultBaseUrl: String,
     @Comment("openAi渠道")
     val openAiBaseUrl: MutableMap<String, String>,
     @Comment("openAi秘钥")
     val openAiKey: String,
+    @Comment("默认模型")
+    val defaultModel: String,
     @Comment("openAi模型")
     val openAiModel: MutableMap<String, String>,
     @Comment("openAi混乱值(0~2)")

@@ -1,5 +1,7 @@
 package cn.chahuyun.docking.config
 
+import cn.chahuyun.docking.CacheType
+import cn.chahuyun.docking.ReplyType
 import cn.chahuyun.docking.SwitchType
 import cn.chahuyun.hibernateplus.DriveType
 import lombok.Data
@@ -24,6 +26,12 @@ object PluginConfig : AutoSavePluginConfig("config") {
     )
     val trigger: String by value("小狐狸")
 
+    @ValueDescription("群未激活时，随机回复概率:(0~100)")
+    val notActivatedProbability:Int by value(5)
+
+    @ValueDescription("激活后回复模式(RANDOM:随机,TIMES:固定次数)")
+    val activatedReplyMode:Pair<ReplyType,Int> by value(Pair(ReplyType.RANDOM,40))
+
     @ValueDescription("数据库类型(H2,SQLITE,MYSQL)")
     var dataType: DriveType by value(DriveType.H2)
 
@@ -35,6 +43,14 @@ object PluginConfig : AutoSavePluginConfig("config") {
 
     @ValueDescription("mysql数据库密码")
     val mysqlPassword: String by value("123456")
+
+    @ValueDescription("消息缓存位置(MEMORY:内存;REDIS:redis)")
+    val messageCache:CacheType by value(CacheType.MEMORY)
+
+    @ValueDescription("消息缓存数量(默认20条)")
+    val messageCacheNum:Int by  value(20)
+
+
 
 
 }
