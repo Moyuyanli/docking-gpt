@@ -239,11 +239,13 @@ class ChatEvent {
             val finalMessageChain = buildMessageChain(resultMessages)
             val string = finalMessageChain.contentToString()
             log.debug("回复消息->$string")
-            if (!finalMessageChain.isEmpty() || string.trim().isNotBlank()) {
-                // 发送当前行的消息
-                val receipt = event.subject.sendMessage(finalMessageChain)
-                messageReceipts.add(receipt)
+            if (string.isBlank() || string.contains("system") || string.isEmpty()) {
+                continue
             }
+
+            // 发送当前行的消息
+            val receipt = event.subject.sendMessage(finalMessageChain)
+            messageReceipts.add(receipt)
         }
 
         if (event.group.botPermission != MEMBER) {
