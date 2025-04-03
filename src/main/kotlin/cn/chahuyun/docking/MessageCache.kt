@@ -1,7 +1,6 @@
 package cn.chahuyun.docking
 
 import cn.chahuyun.docking.config.PluginConfig
-import cn.hutool.core.date.DateUtil
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
@@ -109,7 +108,7 @@ class MemoryCache(
         val member = event.sender
         val messageChain = event.message
         val msgId = messageChain.source.ids[0]
-        val time = DateUtil.date().time.toInt()
+        val time = getNowTime()
 
         // 获取或初始化该 subject 对应的消息列表
         val cachedMessages = memoryCache.getOrPut(group.id) { mutableListOf() }
@@ -131,11 +130,10 @@ class MemoryCache(
         val cachedMessages = memoryCache.getOrPut(group.id) { mutableListOf() }
 
         val msgId = chat.source.ids[0]
-        val time = DateUtil.date().time.toInt()
         val string = chat.source.contentToString()
 
         // 将新的消息添加到列表末尾
-        cachedMessages.add(Pair(bot, Triple(msgId, time, string)))
+        cachedMessages.add(Pair(bot, Triple(msgId, getNowTime(), string)))
 
         // 如果缓存数量超过设定的最大值，则移除最早的消息
         if (cachedMessages.size > cacheNumber) {
@@ -150,7 +148,7 @@ class MemoryCache(
         val cachedMessages = memoryCache.getOrPut(group.id) { mutableListOf() }
 
         // 将新的消息添加到列表末尾
-        cachedMessages.add(Pair(bot, Triple(-1, DateUtil.date().time.toInt(), chat)))
+        cachedMessages.add(Pair(bot, Triple(-1, getNowTime(), chat)))
 
         // 如果缓存数量超过设定的最大值，则移除最早的消息
         if (cachedMessages.size > cacheNumber) {
@@ -164,6 +162,10 @@ class MemoryCache(
      */
     override fun getCachedMessages(group: Long): List<Pair<UserOrBot, Triple<Int, Int, String>>> {
         return memoryCache[group] ?: emptyList()
+    }
+
+    private fun getNowTime(): Int {
+        return (System.currentTimeMillis() / 1000).toInt()
     }
 
 }

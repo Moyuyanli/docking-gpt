@@ -160,7 +160,7 @@ class Client(
     private fun handleMemberMessage(member: UserOrBot, message: Triple<Int, Int, String>): Record {
         val (msgId, timeInt, msg) = message
 
-        val time = DateUtil.format(DateUtil.date(timeInt / 1000L), "yyyy-MM-dd HH:mm:ss")
+        val time = DateUtil.format(DateUtil.date(timeInt * 1000L), "yyyy-MM-dd HH:mm:ss")
         if (member is Member) {
             val position = when (member.permission) {
                 MEMBER -> "member"

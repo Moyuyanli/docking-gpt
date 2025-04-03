@@ -61,7 +61,11 @@ class ChatEvent {
         }
         val chat = ClientFactory.chat(question, position)
 
-        val reply = handleReplyMessage(event, chat)[0]
+        val replyMessage = handleReplyMessage(event, chat)
+        if (replyMessage.isEmpty()) {
+            return
+        }
+        val reply = replyMessage[0]
 
         MessageCache.cache(bot, group, reply)
 
