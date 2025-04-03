@@ -237,7 +237,7 @@ class ChatEvent {
 
             // 构建当前行的消息链
             val finalMessageChain = buildMessageChain(resultMessages)
-            if (!finalMessageChain.isEmpty()) {
+            if (!finalMessageChain.isEmpty() || finalMessageChain.contentToString().isNotBlank()) {
                 // 发送当前行的消息
                 val receipt = event.subject.sendMessage(finalMessageChain)
                 messageReceipts.add(receipt)
