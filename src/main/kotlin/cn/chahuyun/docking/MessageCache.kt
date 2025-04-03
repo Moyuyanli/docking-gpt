@@ -109,7 +109,7 @@ class MemoryCache(
         val member = event.sender
         val messageChain = event.message
         val msgId = messageChain.source.ids[0]
-        val time = messageChain.source.time
+        val time = DateUtil.date().time.toInt()
 
         // 获取或初始化该 subject 对应的消息列表
         val cachedMessages = memoryCache.getOrPut(group.id) { mutableListOf() }
@@ -131,7 +131,7 @@ class MemoryCache(
         val cachedMessages = memoryCache.getOrPut(group.id) { mutableListOf() }
 
         val msgId = chat.source.ids[0]
-        val time = chat.source.time
+        val time = DateUtil.date().time.toInt()
         val string = chat.source.contentToString()
 
         // 将新的消息添加到列表末尾

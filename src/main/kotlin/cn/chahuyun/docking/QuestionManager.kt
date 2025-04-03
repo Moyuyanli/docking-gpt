@@ -58,13 +58,11 @@ class Client(
      * 构建消息
      */
     fun build(question: QuestionMessage, position: String): String {
-        val set = "{职位}"
-        log.debug("bot 请求设定 $set")
         val requestInfo = RequestInfo(
             model,
             temperature,
             mutableListOf(
-                Record(RoleType.SYSTEM, aiMessageSet.replace(set, position)),
+                Record(RoleType.SYSTEM, aiMessageSet.replace("{职位}", position)),
                 Record(RoleType.SYSTEM, person)
             )
         )
@@ -73,7 +71,7 @@ class Client(
 
         val records = cached.map { handleMemberMessage(it.first, it.second) }
 
-        log.debug("消息信息:${records[0]}")
+        log.debug("消息信息:${records[0].content}")
 
         records.forEach { requestInfo.addMessage(it) }
 
