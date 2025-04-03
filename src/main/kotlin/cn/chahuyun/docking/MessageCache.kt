@@ -1,6 +1,7 @@
 package cn.chahuyun.docking
 
 import cn.chahuyun.docking.config.PluginConfig
+import cn.hutool.core.date.DateUtil
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
@@ -21,6 +22,12 @@ interface Cache {
      * 缓存bot的消息
      */
     fun cache(bot: Bot, group: Group, chat: MessageReceipt<Contact>)
+
+    /**
+     * 缓存bot的消息
+     */
+    fun cache(bot: Bot, group: Group, chat: String)
+
 
     /**
      * 获取这个对象的消息缓存
@@ -59,6 +66,13 @@ object MessageCache : Cache {
      * 缓存bot的消息
      */
     override fun cache(bot: Bot, group: Group, chat: MessageReceipt<Contact>) {
+        cache.cache(bot, group, chat)
+    }
+
+    /**
+     * 缓存bot的消息
+     */
+    override fun cache(bot: Bot, group: Group, chat: String) {
         cache.cache(bot, group, chat)
     }
 
@@ -127,6 +141,22 @@ class MemoryCache(
         if (cachedMessages.size > cacheNumber) {
             cachedMessages.removeAt(0) // 移除最早的消息（FIFO 策略）
         }
+    }
+
+    /**
+     * 缓存bot的消息
+     */
+    override fun cache(bot: Bot, group: Group, chat: String) {
+        val cachedMessages = memoryCache.getOrPut(group.id) { mutableListOf() }
+
+        // 将新的消息添加到列表末尾
+        cachedMessages.add(Pair(bot, Triple(-1, DateUtil.date().time.toInt(), chat)))
+
+        // 如果缓存数量超过设定的最大值，则移除最早的消息
+        if (cachedMessages.size > cacheNumber) {
+            cachedMessages.removeAt(0) // 移除最早的消息（FIFO 策略）
+        }
+
     }
 
     /**
