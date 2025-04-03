@@ -237,7 +237,9 @@ class ChatEvent {
 
             // 构建当前行的消息链
             val finalMessageChain = buildMessageChain(resultMessages)
-            if (!finalMessageChain.isEmpty() || finalMessageChain.contentToString().trim().isNotBlank()) {
+            val string = finalMessageChain.contentToString()
+            log.debug("回复消息->$string")
+            if (!finalMessageChain.isEmpty() || string.trim().isNotBlank()) {
                 // 发送当前行的消息
                 val receipt = event.subject.sendMessage(finalMessageChain)
                 messageReceipts.add(receipt)
@@ -257,8 +259,12 @@ class ChatEvent {
                     'm' -> result = cardinal * 60
                 }
 
-                event.group[id]?.mute(result)
-                MessageCache.cache(event.bot, event.group, "你对[id=$id]使用了禁言技能,时间[time=$second]")
+                event.group[id]?.mute(if (result > 1800) 1800 else result)
+                MessageCache.cache(
+                    event.bot,
+                    event.group,
+                    "system:对[id=$id]使用了禁言，时间[time=$second],此消息只是记录，不能主动生成。"
+                )
             }
         }
         return messageReceipts
