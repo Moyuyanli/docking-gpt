@@ -71,6 +71,11 @@ class CustomMatch : CustomPattern {
             }
         }
 
+        //未启用随机响应和状态
+        if (!PluginConfig.groupRandomResponse.contains(groupId)) {
+            return false
+        }
+
         // 如果群未激活，使用 notActivatedProbability 判断
         if (!isActive) {
             val randomValue = Random.nextInt(100)
