@@ -5,18 +5,25 @@ import cn.chahuyun.authorize.MessageAuthorize
 import cn.chahuyun.authorize.constant.AuthPerm
 import cn.chahuyun.authorize.constant.MessageMatchingEnum
 import cn.chahuyun.authorize.utils.MessageUtil.sendMessageQuery
-import cn.chahuyun.docking.*
+import cn.chahuyun.docking.ClientFactory
+import cn.chahuyun.docking.CustomMatch
+import cn.chahuyun.docking.Docking.log
+import cn.chahuyun.docking.MessageCache
+import cn.chahuyun.docking.PermCode
 import cn.chahuyun.docking.entity.QuestionMessage
 import cn.chahuyun.hibernateplus.HibernateFactory
-import net.mamoe.mirai.contact.MemberPermission
+import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.MemberPermission.*
 import net.mamoe.mirai.event.events.GroupMessageEvent
-import net.mamoe.mirai.message.data.source
+import net.mamoe.mirai.message.MessageReceipt
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.sourceIds
 import java.time.LocalDateTime
 
 @EventComponent
 class ChatEvent {
+
 
     /**
      * 小狐狸提问
@@ -51,13 +58,11 @@ class ChatEvent {
             MEMBER -> "member"
             ADMINISTRATOR -> "admin"
         }
-        val chat = ClientFactory.chat(question,position)
+        val chat = ClientFactory.chat(question, position)
 
+        val reply = handleReplyMessage(event, chat)[0]
 
-        val reply = event.sendMessageQuery(chat)
-
-        MessageCache.cache(bot,group,reply)
-
+        MessageCache.cache(bot, group, reply)
 
         question.reply = chat
         question.replyId = reply.sourceIds[0].toLong()
@@ -137,6 +142,104 @@ class ChatEvent {
         }
 
         return Triple(typeName, id, timeInSeconds)
+    }
+
+
+    /**
+     * 对指令进行识别
+     */
+    private suspend fun handleReplyMessage(event: GroupMessageEvent, reply: String): List<MessageReceipt<Contact>> {
+        log.debug("回复处理消息->$reply")
+
+        val botId = Bot.instances[0].id
+
+        // 分割消息为多行
+        val split = reply.split("\n")
+        val messageReceipts = mutableListOf<MessageReceipt<Contact>>() // 存储每条消息的发送结果
+
+        val mutePairs = mutableListOf<Pair<Long, String>>() // 用于收集 mute 类型的 Pair
+
+        for (line in split) {
+            if (line.contains("id=$botId")) {
+                log.debug("检测到bot自己携带消息信息,以忽略! $line")
+                continue
+            }
+
+            val regex = """\[type=(mute|at),id=(\d+)(?:,time=(\d{1,2}[smh]))?]""".toRegex()
+            val resultMessages = mutableListOf<Any>() // 用于存储当前行的消息组件
+
+            var remainingText = line // 当前行的剩余未处理文本
+            var matchResult = regex.find(remainingText)
+
+            while (matchResult != null) {
+                val (type, id, time) = matchResult.destructured
+
+                // 获取匹配前的文本（即普通文本部分）
+                val prefixText = remainingText.substring(0, matchResult.range.first)
+                if (prefixText.isNotEmpty()) {
+                    resultMessages.add(PlainText(prefixText)) // 将普通文本添加到结果中
+                }
+
+                when (type) {
+                    "at" -> {
+                        // 对于 at 类型，转换为 PlainText + At(id) + PlainText
+                        resultMessages.add(At(id.toLong())) // 添加 At 组件
+                    }
+
+                    "mute" -> {
+                        // 对于 mute 类型，收集到 mutePairs 中
+                        mutePairs.add(Pair(id.toLong(), time))
+                    }
+                }
+
+                // 更新剩余文本（去掉已处理的部分）
+                remainingText = remainingText.substring(matchResult.range.last + 1)
+                matchResult = regex.find(remainingText)
+            }
+
+            // 如果还有剩余文本，添加到最后
+            if (remainingText.isNotEmpty()) {
+                resultMessages.add(PlainText(remainingText))
+            }
+
+            // 构建当前行的消息链
+            val finalMessageChain = buildMessageChain(resultMessages)
+
+            // 发送当前行的消息
+            val receipt = event.subject.sendMessage(finalMessageChain)
+            messageReceipts.add(receipt)
+        }
+
+        if (event.group.botPermission != MEMBER) {
+            for (pair in mutePairs) {
+                val id = pair.first
+                val second = pair.second
+
+                val c = second[second.length - 1]
+                val cardinal = second.substring(0, second.length - 1).toInt()
+                var result = 0
+                when (c) {
+                    's' -> result = cardinal * 1
+                    'm' -> result = cardinal * 60
+                }
+
+                event.group[id]?.mute(result)
+            }
+        }
+        return messageReceipts
+    }
+
+    private fun buildMessageChain(messages: List<Any>): MessageChain {
+        var at =false
+        val messageChainBuilder = MessageChainBuilder()
+        messages.forEach { message ->
+            when (message) {
+                is PlainText -> messageChainBuilder.append(message)
+                is At -> messageChainBuilder.append(message)
+                else -> throw IllegalArgumentException("Unsupported message type: ${message::class.simpleName}")
+            }
+        }
+        return messageChainBuilder.build()
     }
 
 }

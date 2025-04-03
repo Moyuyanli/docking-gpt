@@ -12,11 +12,12 @@ import kotlin.random.Random
 
 
 class CustomMatch : CustomPattern {
-
-    /**
-     * 记录器：记录每个群的状态、时间戳和触发次数
-     */
-    private val recorder: MutableMap<Long, Triple<Boolean, Instant, Int>> = ConcurrentHashMap()
+    companion object {
+        /**
+         * 记录器：记录每个群的状态、时间戳和触发次数
+         */
+        private val recorder: MutableMap<Long, Triple<Boolean, Instant, Int>> = ConcurrentHashMap()
+    }
 
     /**
      * 自定义匹配规则
@@ -58,14 +59,14 @@ class CustomMatch : CustomPattern {
 
         // 检查是否命中触发词
         if (Regex("^${PluginConfig.trigger}.*").matches(content)) {
-            refreshRecorder(groupId, isActive) // 刷新记录器
+            refreshRecorder(groupId) // 刷新记录器
             return true
         }
 
         // 检查是否@了机器人
         message.forEach {
             if (it is At && it.target == Bot.instances[0].id) {
-                refreshRecorder(groupId, isActive) // 刷新记录器
+                refreshRecorder(groupId) // 刷新记录器
                 return true
             }
         }
@@ -98,15 +99,8 @@ class CustomMatch : CustomPattern {
      * 刷新记录器
      *
      * @param groupId 群 ID
-     * @param isActive 当前是否激活
      */
-    private fun refreshRecorder(groupId: Long, isActive: Boolean) {
-        if (isActive) {
-            // 如果已经激活，重置时间为当前时间，并将计数器归零
-            recorder[groupId] = Triple(true, Instant.now(), 0)
-        } else {
-            // 如果未激活，设置为激活状态，并初始化时间和计数器
-            recorder[groupId] = Triple(true, Instant.now(), 0)
-        }
+    private fun refreshRecorder(groupId: Long) {
+        recorder[groupId] = Triple(true, Instant.now(), 0)
     }
 }

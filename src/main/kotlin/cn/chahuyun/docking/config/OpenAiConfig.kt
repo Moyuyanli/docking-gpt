@@ -44,7 +44,7 @@ data class AiConfig(
     @Comment("openAi秘钥")
     val openAiKey: String,
     @Comment("默认模型")
-    val defaultModel: String,
+    var defaultModel: String,
     @Comment("openAi模型")
     val openAiModel: MutableMap<String, String>,
     @Comment("openAi混乱值(0~2)")

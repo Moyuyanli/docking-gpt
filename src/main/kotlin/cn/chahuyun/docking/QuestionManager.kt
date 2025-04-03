@@ -48,6 +48,8 @@ class Client(
 
     ) {
 
+    private lateinit var httpServer: RetrofitApi
+
     private fun getToken(): String {
         return "Bearer $apiKey"
     }
@@ -56,11 +58,13 @@ class Client(
      * 构建消息
      */
     fun build(question: QuestionMessage, position: String): String {
+        val set = "{职位}"
+        log.debug("bot 请求设定 $set")
         val requestInfo = RequestInfo(
             model,
             temperature,
             mutableListOf(
-                Record(RoleType.SYSTEM, aiMessageSet.replace("{职位}", position)),
+                Record(RoleType.SYSTEM, aiMessageSet.replace(set, position)),
                 Record(RoleType.SYSTEM, person)
             )
         )
@@ -68,6 +72,8 @@ class Client(
         val cached = MessageCache.getCachedMessages(group = question.group!!)
 
         val records = cached.map { handleMemberMessage(it.first, it.second) }
+
+        log.debug("消息信息:${records[0]}")
 
         records.forEach { requestInfo.addMessage(it) }
 
@@ -132,23 +138,27 @@ class Client(
      * @date 2023/10/19 14:10
      */
     private fun question(token: String, requestInfo: RequestInfo): Call<ResponseInfo?> {
-        val timeout = 30
-        val client = OkHttpClient.Builder()
-            .connectTimeout(timeout.toLong(), TimeUnit.SECONDS)
-            .readTimeout(timeout.toLong(), TimeUnit.SECONDS)
-            .writeTimeout(timeout.toLong(), TimeUnit.SECONDS)
-            .build()
+        if (!::httpServer.isInitialized) {
+            val timeout = 30
+            val client = OkHttpClient.Builder()
+                .connectTimeout(timeout.toLong(), TimeUnit.SECONDS)
+                .readTimeout(timeout.toLong(), TimeUnit.SECONDS)
+                .writeTimeout(timeout.toLong(), TimeUnit.SECONDS)
+                .build()
+            val retrofit: Retrofit = Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+            httpServer = retrofit.create(RetrofitApi::class.java)
+        }
 
-        val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        return retrofit.create(RetrofitApi::class.java).question(token, requestInfo)
+        return httpServer.question(token, requestInfo)
     }
 
-
+    /**
+     * 处理构造下上文消息
+     */
     private fun handleMemberMessage(member: UserOrBot, message: Triple<Int, Int, String>): Record {
         val (msgId, timeInt, msg) = message
 
@@ -172,6 +182,8 @@ class Client(
         }
         return Record(RoleType.ROLE, "这是一条空消息，请忽略!")
     }
+
+
 }
 
 object ClientFactory {
@@ -204,8 +216,8 @@ object ClientFactory {
                 config.openAiKey,
                 PersonManager.person + "\n以下为群聊内容，请你补全并进行回复。",
                 config.temperature,
-                config.openAiModel[config.defaultModel]!!,
-                config.openAiBaseUrl[config.defaultBaseUrl]!!,
+                config.openAiModel[config.defaultModel] ?: config.openAiModel.values.first(),
+                config.openAiBaseUrl[config.defaultBaseUrl] ?: config.openAiBaseUrl.values.first(),
                 proxy
             )
 
@@ -231,6 +243,7 @@ object ClientFactory {
         val s = config.openAiModel[model]
         return s?.let {
             requestClient.model = it
+            config.defaultModel = model
             "模型切换成功:$model"
         } ?: "没有这个模型!"
     }
