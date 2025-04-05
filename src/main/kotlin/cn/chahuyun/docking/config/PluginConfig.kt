@@ -35,6 +35,9 @@ object PluginConfig : AutoSavePluginConfig("config") {
     @ValueDescription("激活后回复模式(RANDOM:随机,TIMES:固定次数)")
     val activatedReplyMode: Pair<ReplyType, Int> by value(Pair(ReplyType.RANDOM, 40))
 
+    @ValueDescription("没有禁言权限的群")
+    val notMutePowerGroups: MutableList<Long> by value(mutableListOf())
+
     @ValueDescription("数据库类型(H2,SQLITE,MYSQL)")
     var dataType: DriveType by value(DriveType.H2)
 
@@ -51,7 +54,7 @@ object PluginConfig : AutoSavePluginConfig("config") {
     val messageCache: CacheType by value(CacheType.MEMORY)
 
     @ValueDescription("消息缓存数量(默认20条)")
-    val messageCacheNum: Int by value(20)
+    val messageCacheNum: Int by value(30)
 
 
 }

@@ -5,11 +5,8 @@ import cn.chahuyun.authorize.MessageAuthorize
 import cn.chahuyun.authorize.constant.AuthPerm
 import cn.chahuyun.authorize.constant.MessageMatchingEnum
 import cn.chahuyun.authorize.utils.MessageUtil.sendMessageQuery
-import cn.chahuyun.docking.ClientFactory
-import cn.chahuyun.docking.CustomMatch
+import cn.chahuyun.docking.*
 import cn.chahuyun.docking.Docking.log
-import cn.chahuyun.docking.MessageCache
-import cn.chahuyun.docking.PermCode
 import cn.chahuyun.docking.config.PluginConfig
 import cn.chahuyun.docking.entity.QuestionMessage
 import cn.chahuyun.hibernateplus.HibernateFactory
@@ -59,15 +56,19 @@ class ChatEvent {
             MEMBER -> "member"
             ADMINISTRATOR -> "admin"
         }
-        val chat = ClientFactory.chat(question, position)
+
+        val aiSet = aiMessageSet.replace("{职位}", position)
+            .replace("{禁言权限}", PluginConfig.notMutePowerGroups.contains(group.id).not().toString())
+
+        val chat = ClientFactory.chat(question, aiSet)
 
         val replyMessage = handleReplyMessage(event, chat)
         if (replyMessage.isEmpty()) {
             return
         }
-        val reply = replyMessage[0]
+        replyMessage.forEach { MessageCache.cache(bot, group, it) }
 
-        MessageCache.cache(bot, group, reply)
+        val reply = replyMessage[0]
 
         question.reply = chat
         question.replyId = reply.sourceIds[0].toLong()
@@ -119,7 +120,7 @@ class ChatEvent {
 
 
     @MessageAuthorize(
-        ["启用随机回复"],
+        ["启用随机回复", "开启随机回复"],
         messageMatching = MessageMatchingEnum.TEXT,
         userPermissions = [AuthPerm.OWNER, AuthPerm.ADMIN],
         groupPermissions = [PermCode.CHAT]
@@ -145,6 +146,36 @@ class ChatEvent {
         if (response.contains(groupId)) {
             response.remove(groupId)
             sendMessageQuery(event, "已关闭本群随机回复响应")
+        }
+    }
+
+    @MessageAuthorize(
+        ["启用禁言", "开启禁言"],
+        messageMatching = MessageMatchingEnum.TEXT,
+        userPermissions = [AuthPerm.OWNER, AuthPerm.ADMIN],
+        groupPermissions = [PermCode.CHAT]
+    )
+    suspend fun addMute(event: GroupMessageEvent) {
+        val response = PluginConfig.notMutePowerGroups
+        val groupId = event.group.id
+        if (response.contains(groupId)) {
+            response.remove(groupId)
+            sendMessageQuery(event, "已开启本群禁言权限")
+        }
+    }
+
+    @MessageAuthorize(
+        ["关闭禁言"],
+        messageMatching = MessageMatchingEnum.TEXT,
+        userPermissions = [AuthPerm.OWNER, AuthPerm.ADMIN],
+        groupPermissions = [PermCode.CHAT]
+    )
+    suspend fun delMute(event: GroupMessageEvent) {
+        val response = PluginConfig.notMutePowerGroups
+        val groupId = event.group.id
+        if (!response.contains(groupId)) {
+            response.add(groupId)
+            sendMessageQuery(event, "以关闭本群禁言权限")
         }
     }
 
@@ -206,7 +237,7 @@ class ChatEvent {
             val resultMessages = mutableListOf<Any>() // 用于存储当前行的消息组件
 
             // 当前行的剩余未处理文本
-            var remainingText = line.replace("\n", "").replace("\\n","")
+            var remainingText = line.replace("\n", "").replace("\\n", "")
             var matchResult = regex.find(remainingText)
 
             while (matchResult != null) {
@@ -248,12 +279,16 @@ class ChatEvent {
                 continue
             }
 
+            if ("""\[.*]?""".toRegex().matches(string)) {
+                continue
+            }
+
             // 发送当前行的消息
             val receipt = event.subject.sendMessage(finalMessageChain)
             messageReceipts.add(receipt)
         }
 
-        if (event.group.botPermission != MEMBER) {
+        if (event.group.botPermission != MEMBER && PluginConfig.notMutePowerGroups.contains(event.group.id).not()) {
             for (pair in mutePairs) {
                 val id = pair.first
                 val second = pair.second

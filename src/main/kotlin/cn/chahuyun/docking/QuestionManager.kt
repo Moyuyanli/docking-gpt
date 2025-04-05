@@ -24,15 +24,15 @@ class Client(
     /**
      * 连接秘钥
      */
-    var apiKey: String,
+    private var apiKey: String,
     /**
      * 设定
      */
-    var person: String,
+    private var person: String,
     /**
      * 混乱
      */
-    var temperature: Double,
+    private var temperature: Double,
     /**
      * 模型
      */
@@ -57,12 +57,12 @@ class Client(
     /**
      * 构建消息
      */
-    fun build(question: QuestionMessage, position: String): String {
+    fun build(question: QuestionMessage, aiSet: String): String {
         val requestInfo = RequestInfo(
             model,
             temperature,
             mutableListOf(
-                Record(RoleType.SYSTEM, aiMessageSet.replace("{职位}", position)),
+                Record(RoleType.SYSTEM, aiSet),
                 Record(RoleType.SYSTEM, person)
             )
         )
@@ -229,8 +229,8 @@ object ClientFactory {
     /**
      * 进行聊天
      */
-    fun chat(question: QuestionMessage, position: String): String {
-        return requestClient.build(question, position)
+    fun chat(question: QuestionMessage, aiSet: String): String {
+        return requestClient.build(question, aiSet)
     }
 
 
