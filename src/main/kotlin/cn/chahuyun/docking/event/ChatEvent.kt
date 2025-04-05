@@ -232,7 +232,7 @@ class ChatEvent {
                 log.debug("检测到bot自己携带消息信息,以忽略! $line")
                 continue
             }
-
+            log.debug("单行消息->$line")
             val regex = """\[type=(mute|at),id=(\d+)(?:,time=(\d{1,2}[smh]))?]""".toRegex()
             val resultMessages = mutableListOf<Any>() // 用于存储当前行的消息组件
 
@@ -274,14 +274,10 @@ class ChatEvent {
             // 构建当前行的消息链
             val finalMessageChain = buildMessageChain(resultMessages)
             val string = finalMessageChain.contentToString()
-            log.debug("回复消息->$string")
             if (string.isBlank() || string.contains("system") || string.isEmpty()) {
                 continue
             }
-
-            if ("""\[.*]?""".toRegex().matches(string)) {
-                continue
-            }
+            log.debug("回复消息->$string")
 
             // 发送当前行的消息
             val receipt = event.subject.sendMessage(finalMessageChain)
@@ -316,7 +312,11 @@ class ChatEvent {
         val messageChainBuilder = MessageChainBuilder()
         messages.forEach { message ->
             when (message) {
-                is PlainText -> messageChainBuilder.append(message)
+                is PlainText -> {
+                    val replace = message.content.replace(Regex("\\[.*?]"), "")
+                    messageChainBuilder.append(PlainText(replace))
+                }
+
                 is At -> messageChainBuilder.append(message)
                 else -> throw IllegalArgumentException("Unsupported message type: ${message::class.simpleName}")
             }
