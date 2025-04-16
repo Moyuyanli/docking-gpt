@@ -7,12 +7,10 @@ import cn.chahuyun.docking.config.PluginConfig
 import cn.chahuyun.docking.entity.*
 import cn.chahuyun.docking.http.RetrofitApi
 import cn.chahuyun.hibernateplus.HibernateFactory
-import cn.hutool.core.date.DateUtil
 import cn.hutool.json.JSONObject
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.MemberPermission.*
-import net.mamoe.mirai.contact.UserOrBot
 import net.mamoe.mirai.contact.nameCardOrNick
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -69,7 +67,7 @@ class Client(
 
         val cached = MessageCache.getCachedMessages(group = question.group!!)
 
-        val records = cached.map { handleMemberMessage(it.first, it.second) }
+        val records = cached.map { handleMemberMessage(it) }
 
         log.debug("消息信息:${records[0].content}")
 
@@ -157,28 +155,35 @@ class Client(
     /**
      * 处理构造下上文消息
      */
-    private fun handleMemberMessage(member: UserOrBot, message: Triple<Int, Int, String>): Record {
-        val (msgId, timeInt, msg) = message
+    private fun handleMemberMessage(messageCache: MessageCacheEntity): Record {
+        val msgId = messageCache.msgId
+        val time = messageCache.time
+        val member = messageCache.member
+        val msg = messageCache.message
 
-        val time = DateUtil.format(DateUtil.date(timeInt * 1000L), "yyyy-MM-dd HH:mm:ss")
-        if (member is Member) {
-            val position = when (member.permission) {
-                MEMBER -> "member"
-                ADMINISTRATOR -> "admin"
-                OWNER -> "owner"
+
+        when (member) {
+            is Member -> {
+                val position = when (member.permission) {
+                    MEMBER -> "member"
+                    ADMINISTRATOR -> "admin"
+                    OWNER -> "owner"
+                }
+
+                val prefix =
+                    "[id=${member.id},name=\"${member.nameCardOrNick}\",time=$time,msgId=$msgId,position=$position]\n"
+                return Record(RoleType.USER, prefix + msg)
             }
 
-            // 格式化时间为字符串
+            is Bot -> {
+                val prefix = "[id=${member.id},name=\"${member.nameCardOrNick}\",time=$time,msgId=$msgId]\n"
+                return Record(RoleType.ROLE, prefix + msg)
+            }
 
-            val prefix = "[id=${member.id},name=${member.nameCardOrNick},time=$time,msgId=$msgId,position=$position]\n"
-            return Record(RoleType.USER, prefix + msg)
+            else -> {
+                return Record(RoleType.ROLE, "这是一条空消息，请忽略!")
+            }
         }
-
-        if (member is Bot) {
-            val prefix = "[id=${member.id},name=${member.nameCardOrNick},time=$time,msgId=$msgId]\n"
-            return Record(RoleType.ROLE, prefix + msg)
-        }
-        return Record(RoleType.ROLE, "这是一条空消息，请忽略!")
     }
 
 

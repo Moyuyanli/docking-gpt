@@ -13,11 +13,13 @@ import cn.chahuyun.hibernateplus.HibernateFactory
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.MemberPermission.*
+import net.mamoe.mirai.contact.nameCardOrNick
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.sourceIds
 import java.time.LocalDateTime
+import kotlin.random.Random
 
 @EventComponent
 class ChatEvent {
@@ -32,12 +34,18 @@ class ChatEvent {
         groupPermissions = [PermCode.CHAT]
     )
     suspend fun chat(event: GroupMessageEvent) {
+        val group = event.group
+
+        if (CustomMatch.isReplyStatus(group)) {
+            return
+        }
+
+        CustomMatch.openReplyStatus(group)
+
         val message = event.message
         val content = message.contentToString()
         message.source.ids
 
-        val group = event.group
-        val bot = event.bot
         val sender = event.sender
 
         val question = QuestionMessage(
@@ -66,7 +74,6 @@ class ChatEvent {
         if (replyMessage.isEmpty()) {
             return
         }
-        replyMessage.forEach { MessageCache.cache(bot, group, it) }
 
         val reply = replyMessage[0]
 
@@ -75,6 +82,8 @@ class ChatEvent {
         question.replyTime = LocalDateTime.now()
 
         HibernateFactory.merge(question)
+
+        CustomMatch.closeReplyStatus(group)
     }
 
     @MessageAuthorize(
@@ -227,6 +236,7 @@ class ChatEvent {
 
         val mutePairs = mutableListOf<Pair<Long, String>>() // 用于收集 mute 类型的 Pair
 
+        val bot = event.bot
         for (line in split) {
             if (line.contains("id=$botId")) {
                 log.debug("检测到bot自己携带消息信息,以忽略! $line")
@@ -281,7 +291,20 @@ class ChatEvent {
 
             // 发送当前行的消息
             val receipt = event.subject.sendMessage(finalMessageChain)
+            MessageCache.cache(
+                MessageCacheEntity(
+                    event.group,
+                    bot,
+                    receipt.source.ids[0],
+                    MessageCache.getNowTime(),
+                    string,
+                    MessageActionType.MSG
+                )
+            )
             messageReceipts.add(receipt)
+
+            val (min, max) = PluginConfig.delayReplyTime
+            randomDelay(min, max)
         }
 
         if (event.group.botPermission != MEMBER && PluginConfig.notMutePowerGroups.contains(event.group.id).not()) {
@@ -297,11 +320,19 @@ class ChatEvent {
                     'm' -> result = cardinal * 60
                 }
 
-                event.group[id]?.mute(if (result > 1800) 1800 else result)
+                val member = event.group[id]
+                member?.mute(if (result > 1800) 1800 else result)
                 MessageCache.cache(
-                    event.bot,
-                    event.group,
-                    "system:对[id=$id]使用了禁言，时间[time=$second],此消息只是记录，不能主动生成。"
+                    MessageCacheEntity(
+                        event.group,
+                        bot,
+                        -1,
+                        MessageCache.getNowTime(),
+                        "[type=mute,id=$id,time=$second]\n" +
+                                "system:[id=${bot.id},name=\"${bot.nameCardOrNick}\"]" +
+                                "对[id=$id,name=\"${member?.nameCardOrNick ?: "未知用户名"}\"]使用了禁言，时间[time=$second]",
+                        MessageActionType.MUTE
+                    )
                 )
             }
         }
@@ -324,4 +355,21 @@ class ChatEvent {
         return messageChainBuilder.build()
     }
 
+
+    /**
+     * 根据配置的最小值和最大值进行随机延迟。
+     *
+     * @param min 最小延迟时间（秒）
+     * @param max 最大延迟时间（秒）
+     */
+    private fun randomDelay(min: Int, max: Int) {
+        // 修复非法参数：如果 min < 0 或 max < 0 或 min > max，则设置为双 0
+        val adjustedMin = if (min < 0 || max < 0 || min > max) 0 else min
+        val adjustedMax = if (min < 0 || max < 0 || min > max) 0 else max
+
+        // 将秒转换为毫秒
+        val delayTime = Random.nextInt(adjustedMin * 1000, (adjustedMax + 1) * 1000) // 生成 [min*1000, max*1000] 范围内的随机数
+        println("随机延迟时间: ${delayTime / 1000} 秒")
+        Thread.sleep(delayTime.toLong()) // 延迟指定的毫秒数
+    }
 }

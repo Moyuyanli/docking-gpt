@@ -3,10 +3,12 @@ package cn.chahuyun.docking
 import cn.chahuyun.authorize.match.CustomPattern
 import cn.chahuyun.docking.config.PluginConfig
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.Event
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.At
 import java.time.Instant
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.random.Random
 
@@ -17,6 +19,46 @@ class CustomMatch : CustomPattern {
          * 记录器：记录每个群的状态、时间戳和触发次数
          */
         private val recorder: MutableMap<Long, Triple<Boolean, Instant, Int>> = ConcurrentHashMap()
+
+        /**
+         * 线程安全的回复状态集合。
+         */
+        private val replyStatus: MutableSet<Long> = Collections.synchronizedSet(mutableSetOf())
+
+        /**
+         * 检查指定群组是否已开启回复状态。
+         *
+         * @param group 群组
+         * @return true 正在响应回复中
+         */
+        fun isReplyStatus(group: Group): Boolean {
+            return synchronized(replyStatus) {
+                replyStatus.contains(group.id)
+            }
+        }
+
+        /**
+         * 开启指定群组的回复状态。
+         *
+         * @param group 群组
+         */
+        fun openReplyStatus(group: Group) {
+            synchronized(replyStatus) {
+                replyStatus.add(group.id)
+            }
+        }
+
+        /**
+         * 关闭指定群组的回复状态。
+         *
+         * @param group 群组
+         */
+        fun closeReplyStatus(group: Group) {
+            synchronized(replyStatus) {
+                replyStatus.remove(group.id)
+            }
+        }
+
     }
 
     /**
@@ -33,6 +75,11 @@ class CustomMatch : CustomPattern {
         MessageCache.cache(event)
 
         val group = event.group
+
+        if (isReplyStatus(group)) {
+            return false
+        }
+
         val groupId = group.id
         val message = event.message
         val content = message.contentToString()

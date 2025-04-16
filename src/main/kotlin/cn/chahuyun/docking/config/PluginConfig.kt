@@ -35,6 +35,9 @@ object PluginConfig : AutoSavePluginConfig("config") {
     @ValueDescription("激活后回复模式(RANDOM:随机,TIMES:固定次数)")
     val activatedReplyMode: Pair<ReplyType, Int> by value(Pair(ReplyType.RANDOM, 40))
 
+    @ValueDescription("延迟回复时间(单位:秒)")
+    var delayReplyTime: Pair<Int, Int> by value(Pair(2, 4))
+
     @ValueDescription("没有禁言权限的群")
     val notMutePowerGroups: MutableList<Long> by value(mutableListOf())
 
