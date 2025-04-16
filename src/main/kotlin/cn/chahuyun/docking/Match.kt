@@ -46,6 +46,10 @@ class CustomMatch : CustomPattern {
             synchronized(replyStatus) {
                 replyStatus.add(group.id)
             }
+
+            Thread.sleep(120 * 1000)
+
+            closeReplyStatus(group)
         }
 
         /**
