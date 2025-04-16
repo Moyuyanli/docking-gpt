@@ -238,16 +238,19 @@ class ChatEvent {
 
         val bot = event.bot
         for (line in split) {
-            if (line.contains("id=$botId")) {
-                log.debug("检测到bot自己携带消息信息,以忽略! $line")
+            val yuanRegex = """\[id=\d+,name="[^"]+",time=\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},msgId=\d+]""".toRegex()
+            val lineMsg = line.replace(yuanRegex,"").trim()
+
+            if (lineMsg.contains("id=$botId")) {
+                log.debug("检测到bot自己携带消息信息,以忽略! $lineMsg")
                 continue
             }
-            log.debug("单行消息->$line")
+            log.debug("单行消息->$lineMsg")
             val regex = """\[type=(mute|at),id=(\d+)(?:,time=(\d{1,2}[smh]))?]""".toRegex()
             val resultMessages = mutableListOf<Any>() // 用于存储当前行的消息组件
 
             // 当前行的剩余未处理文本
-            var remainingText = line.replace("\n", "").replace("\\n", "")
+            var remainingText = lineMsg.replace("\n", "").replace("\\n", "")
             var matchResult = regex.find(remainingText)
 
             while (matchResult != null) {
@@ -369,7 +372,7 @@ class ChatEvent {
 
         // 将秒转换为毫秒
         val delayTime = Random.nextInt(adjustedMin * 1000, (adjustedMax + 1) * 1000) // 生成 [min*1000, max*1000] 范围内的随机数
-        println("随机延迟时间: ${delayTime / 1000} 秒")
+        log.debug("随机延迟时间: $delayTime 毫秒")
         Thread.sleep(delayTime.toLong()) // 延迟指定的毫秒数
     }
 }
