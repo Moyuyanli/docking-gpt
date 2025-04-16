@@ -47,9 +47,13 @@ class CustomMatch : CustomPattern {
                 replyStatus.add(group.id)
             }
 
-            Thread.sleep(120 * 1000)
 
-            closeReplyStatus(group)
+            Thread {
+                Thread.sleep(120 * 1000)
+                if (isReplyStatus(group)) {
+                    closeReplyStatus(group)
+                }
+            }.start()
         }
 
         /**
