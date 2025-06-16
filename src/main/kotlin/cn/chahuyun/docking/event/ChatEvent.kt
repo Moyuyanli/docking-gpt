@@ -232,7 +232,7 @@ class ChatEvent {
         val botId = Bot.instances[0].id
 
         // 分割消息为多行
-        val split = reply.split("\n").stream().filter { it.isNotBlank() }.toList()
+        val split = reply.split("\n").stream().filter { it.isNotEmpty() && it.isNotBlank() }.toList()
         val messageReceipts = mutableListOf<MessageReceipt<Contact>>() // 存储每条消息的发送结果
 
         val mutePairs = mutableListOf<Pair<Long, String>>() // 用于收集 mute 类型的 Pair
