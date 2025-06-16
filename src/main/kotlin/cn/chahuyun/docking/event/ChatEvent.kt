@@ -242,6 +242,10 @@ class ChatEvent {
             val yuanRegex = """\[id=\d+,name="[^"]+",time=\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},msgId=\d+]""".toRegex()
             val lineMsg = line.replace(yuanRegex, "").trim()
 
+            if (lineMsg.isBlank()) {
+                continue
+            }
+
             if (lineMsg.contains("id=$botId")) {
                 log.debug("检测到bot自己携带消息信息,以忽略! $lineMsg")
                 continue
