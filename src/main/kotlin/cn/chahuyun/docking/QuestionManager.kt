@@ -184,8 +184,13 @@ class Client(
             }
 
             is Bot -> {
+                val regex = """(@\\d+)""".toRegex()
+                val result = msg.replaceString(regex) {
+                    val (id) = it
+                    return@replaceString "[type=at,id=$id,name=未知]"
+                }
                 val prefix = "[id=${member.id},name=\"${member.nameCardOrNick}\",time=$time,msgId=$msgId]\n"
-                return Record(RoleType.ROLE, prefix + msg)
+                return Record(RoleType.ROLE, prefix + result)
             }
 
             else -> {
