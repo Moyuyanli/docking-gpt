@@ -161,7 +161,6 @@ class Client(
         val member = messageCache.member
         val msg = messageCache.message
 
-
         when (member) {
             is Member -> {
                 val position = when (member.permission) {
@@ -170,9 +169,18 @@ class Client(
                     OWNER -> "owner"
                 }
 
+                val regex = """(@\\d+)""".toRegex()
+                val result = msg.replaceString(regex) {
+                    val (id) = it
+
+                    val atMember = member.group[id.toLong()]
+                    atMember?.let { return@replaceString "[type=at,id=$id,name=${atMember.nameCardOrNick}]" }
+                    return@replaceString "[type=at,id=$id,name=未知]"
+                }
+
                 val prefix =
                     "[id=${member.id},name=\"${member.nameCardOrNick}\",time=$time,msgId=$msgId,position=$position]\n"
-                return Record(RoleType.USER, prefix + msg)
+                return Record(RoleType.USER, prefix + result)
             }
 
             is Bot -> {

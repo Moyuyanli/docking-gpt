@@ -20,6 +20,7 @@ import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.sourceIds
 import java.time.LocalDateTime
 import kotlin.random.Random
+import kotlin.streams.toList
 
 @EventComponent
 class ChatEvent {
@@ -231,7 +232,7 @@ class ChatEvent {
         val botId = Bot.instances[0].id
 
         // 分割消息为多行
-        val split = reply.split("\n")
+        val split = reply.split("\n").stream().filter { it.isNotBlank() }.toList()
         val messageReceipts = mutableListOf<MessageReceipt<Contact>>() // 存储每条消息的发送结果
 
         val mutePairs = mutableListOf<Pair<Long, String>>() // 用于收集 mute 类型的 Pair
@@ -239,7 +240,7 @@ class ChatEvent {
         val bot = event.bot
         for (line in split) {
             val yuanRegex = """\[id=\d+,name="[^"]+",time=\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},msgId=\d+]""".toRegex()
-            val lineMsg = line.replace(yuanRegex,"").trim()
+            val lineMsg = line.replace(yuanRegex, "").trim()
 
             if (lineMsg.contains("id=$botId")) {
                 log.debug("检测到bot自己携带消息信息,以忽略! $lineMsg")
@@ -247,45 +248,32 @@ class ChatEvent {
             }
             log.debug("单行消息->$lineMsg")
             val regex = """\[type=(mute|at),id=(\d+)(?:,time=(\d{1,2}[smh]))?]""".toRegex()
-            val resultMessages = mutableListOf<Any>() // 用于存储当前行的消息组件
 
             // 当前行的剩余未处理文本
-            var remainingText = lineMsg.replace("\n", "").replace("\\n", "")
-            var matchResult = regex.find(remainingText)
+            val remainingText = lineMsg.replace("\n", "").replace("\\n", "")
 
-            while (matchResult != null) {
-                val (type, id, time) = matchResult.destructured
-
-                // 获取匹配前的文本（即普通文本部分）
-                val prefixText = remainingText.substring(0, matchResult.range.first)
-                if (prefixText.isNotEmpty()) {
-                    resultMessages.add(PlainText(prefixText)) // 将普通文本添加到结果中
-                }
+            val replaceMessage = remainingText.replaceMessage(regex) {
+                val (type, id, time) = it
 
                 when (type) {
                     "at" -> {
-                        // 对于 at 类型，转换为 PlainText + At(id) + PlainText
-                        resultMessages.add(At(id.toLong())) // 添加 At 组件
+                        return@replaceMessage At(id.toLong())
                     }
 
                     "mute" -> {
                         // 对于 mute 类型，收集到 mutePairs 中
                         mutePairs.add(Pair(id.toLong(), time))
+                        return@replaceMessage null
+                    }
+
+                    else -> {
+                        return@replaceMessage null
                     }
                 }
-
-                // 更新剩余文本（去掉已处理的部分）
-                remainingText = remainingText.substring(matchResult.range.last + 1)
-                matchResult = regex.find(remainingText)
-            }
-
-            // 如果还有剩余文本，添加到最后
-            if (remainingText.isNotEmpty()) {
-                resultMessages.add(PlainText(remainingText))
             }
 
             // 构建当前行的消息链
-            val finalMessageChain = buildMessageChain(resultMessages)
+            val finalMessageChain = buildMessageChain(replaceMessage)
             val string = finalMessageChain.contentToString()
             if (string.isBlank() || string.contains("system") || string.isEmpty()) {
                 continue
