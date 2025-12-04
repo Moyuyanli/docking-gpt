@@ -1,4 +1,4 @@
-package cn.chahuyun.docking
+package cn.chahuyun.docking.util
 
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.SingleMessage

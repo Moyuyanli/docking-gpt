@@ -9,6 +9,8 @@ import cn.chahuyun.docking.*
 import cn.chahuyun.docking.Docking.log
 import cn.chahuyun.docking.config.PluginConfig
 import cn.chahuyun.docking.entity.QuestionMessage
+import cn.chahuyun.docking.match.CustomMatch
+import cn.chahuyun.docking.util.replaceMessage
 import cn.chahuyun.hibernateplus.HibernateFactory
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact

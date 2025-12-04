@@ -1,5 +1,5 @@
 plugins {
-    val kotlinVersion = "1.8.10"
+    val kotlinVersion = "1.9.23"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
@@ -8,32 +8,31 @@ plugins {
 }
 
 group = "cn.chahuyun"
-version = "1.2.7"
+version = "2.0.0"
 
 repositories {
-    maven("https://repo1.maven.org/maven2")
-    maven("https://maven.aliyun.com/repository/public")
+    maven("https://nexus.jsdu.cn/repository/maven-public/")
     mavenCentral()
 }
 
 dependencies {
     //依赖
     compileOnly("net.mamoe.yamlkt:yamlkt:0.12.0")
-    compileOnly("cn.chahuyun:HuYanAuthorize:1.2.0")
+    compileOnly("cn.chahuyun:HuYanAuthorize:1.2.6")
 
-
-    //hutool
-    implementation("cn.hutool:hutool-all:5.8.20")
-
+    //数据库工具
     implementation("cn.chahuyun:hibernate-plus:1.0.16")
 
-    //retrofit2
-    implementation("com.squareup.retrofit2:retrofit:2.7.2")
-    implementation("com.squareup.retrofit2:converter-gson:2.7.2")
+    //kotlin日志
+    implementation("io.github.oshai:kotlin-logging:6.0.9")
 
-    //lombok
-    implementation("org.projectlombok:lombok:1.18.26")
-    annotationProcessor("org.projectlombok:lombok:1.18.26")
+    val ktorVersion = "2.3.13"
+    //http工具
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    // 使用 kotlinx.serialization 作为 JSON 转换器
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 }
 
 tasks.withType<JavaCompile> {

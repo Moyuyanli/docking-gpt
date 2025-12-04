@@ -1,6 +1,7 @@
 package cn.chahuyun.docking
 
 import cn.chahuyun.authorize.PermissionServer
+import cn.chahuyun.docking.config.AIConfig
 import cn.chahuyun.docking.config.ForbiddenWords
 import cn.chahuyun.docking.config.OpenAiConfig
 import cn.chahuyun.docking.config.PluginConfig
@@ -15,7 +16,7 @@ object Docking : KotlinPlugin(
     ) {
         author("moyuyanli")
         info("用于对接AI的Mira插件")
-        dependsOn("cn.chahuyun.HuYanAuthorize", ">=1.2.0", false)
+            dependsOn("cn.chahuyun.HuYanAuthorize", ">=1.2.7", false)
     }
 ) {
     /**
@@ -28,7 +29,7 @@ object Docking : KotlinPlugin(
      */
     override fun onEnable() {
         PluginConfig.reload()
-        OpenAiConfig.reload()
+        AIConfig.reload()
         ForbiddenWords.reload()
 
         PermManager.init(this)

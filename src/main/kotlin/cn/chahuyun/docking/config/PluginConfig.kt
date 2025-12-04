@@ -1,22 +1,16 @@
 package cn.chahuyun.docking.config
 
-import cn.chahuyun.docking.CacheType
-import cn.chahuyun.docking.ReplyType
-import cn.chahuyun.docking.SwitchType
 import cn.chahuyun.hibernateplus.DriveType
-import lombok.Data
 import net.mamoe.mirai.console.data.AutoSavePluginConfig
 import net.mamoe.mirai.console.data.ValueDescription
 import net.mamoe.mirai.console.data.value
 import net.mamoe.yamlkt.Comment
 
-
-@Data
 @ValueDescription("插件配置")
-object PluginConfig : AutoSavePluginConfig("config") {
+object PluginConfig : AutoSavePluginConfig("pluginConfig") {
 
-    @ValueDescription("使用的openAi配置项(XCJ,OFFICIAL)")
-    val type: SwitchType by value(SwitchType.XCJ)
+    @ValueDescription("默认接入的ai配置")
+    val type: String by value("def")
 
     @Comment(
         """
@@ -59,5 +53,35 @@ object PluginConfig : AutoSavePluginConfig("config") {
     @ValueDescription("消息缓存数量(默认20条)")
     val messageCacheNum: Int by value(30)
 
+}
 
+/**
+ * 缓存类型
+ */
+enum class CacheType {
+    /**
+     * 内存
+     */
+    MEMORY,
+
+    /**
+     * redis
+     */
+    REDIS
+}
+
+
+/**
+ * 回复类型
+ */
+enum class ReplyType {
+    /**
+     * 随机
+     */
+    RANDOM,
+
+    /**
+     * 次数
+     */
+    TIMES
 }

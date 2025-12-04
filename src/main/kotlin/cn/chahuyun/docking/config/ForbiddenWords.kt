@@ -12,8 +12,7 @@ import net.mamoe.mirai.console.data.value
  */
 object ForbiddenWords : AutoSavePluginConfig("forbidden") {
 
-    @ValueDescription("过滤词")
+    @ValueDescription("过滤词,正则形式,list存储")
     var forbidden: MutableList<String> by value(mutableListOf("不[能要行]"))
-
 
 }

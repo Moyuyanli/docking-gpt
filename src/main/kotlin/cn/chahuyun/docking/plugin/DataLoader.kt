@@ -1,17 +1,16 @@
-package cn.chahuyun.docking
+package cn.chahuyun.docking.plugin
 
-import cn.chahuyun.docking.Docking.log
 import cn.chahuyun.docking.config.PluginConfig
 import cn.chahuyun.hibernateplus.DriveType
 import cn.chahuyun.hibernateplus.HibernatePlusService
 import net.mamoe.mirai.console.plugin.jvm.JvmPlugin
 
-object PluginManager {
+object DataLoader {
 
     /**
      * 加载数据库
      */
-    fun init(plugin: JvmPlugin) {
+    fun loader(plugin: JvmPlugin) {
         val configuration = HibernatePlusService.createConfiguration(plugin::class.java)
 
         configuration.classLoader = plugin::class.java.classLoader
