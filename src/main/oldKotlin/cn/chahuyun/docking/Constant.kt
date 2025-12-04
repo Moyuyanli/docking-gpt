@@ -2,25 +2,12 @@ package cn.chahuyun.docking
 
 import kotlinx.serialization.Serializable
 
-enum class SwitchType {
-    XCJ,
-    CUSTOM,
-    OFFICIAL
-}
-
-@Serializable
-enum class ProxyKey {
-    Type, URL, Port
-}
 
 object PermCode {
-
     /**
      * 聊天
      */
     const val CHAT = "chat"
-
-
 }
 
 
@@ -111,20 +98,6 @@ enum class RoleType(
 }
 
 
-/**
- * 缓存类型
- */
-enum class CacheType {
-    /**
-     * 内存
-     */
-    MEMORY,
-
-    /**
-     * redis
-     */
-    REDIS
-}
 
 
 /**
